@@ -122,3 +122,32 @@ laQueEsMayor p1 p2 = if (esMayorQueLaOtra p1 p2)
                         else p2
 
 -- 2)
+data TipoDePokemon = Agua | Fuego | Planta
+        deriving Show
+data Pokemon = Pok TipoDePokemon Int
+        deriving Show
+data Entrenador = Ent String Pokemon Pokemon
+        deriving Show
+--Para probar
+pokDefault1 :: Pokemon
+pokDefault1 = Pok Agua 40
+pokDefault2 :: Pokemon
+pokDefault2 = Pok Fuego 25
+entDefault1 :: Entrenador
+entDefault1 = Ent "ent1" pokDefault1 pokDefault2
+-- a)
+esTipoMasFuerteQue :: TipoDePokemon -> TipoDePokemon -> Bool
+esTipoMasFuerteQue Agua Fuego = True
+esTipoMasFuerteQue Planta Agua = True
+esTipoMasFuerteQue Fuego Planta = True
+esTipoMasFuerteQue _ _ = False
+superaA :: Pokemon -> Pokemon -> Bool
+superaA (Pok t1 p1) (Pok t2 p2) = esTipoMasFuerteQue t1 t2
+-- b)
+siEsPokemonDeTipoDevuelveUno :: TipoDePokemon -> Pokemon -> Int
+siEsPokemonDeTipoDevuelveUno t1 (Pok t2 p) = if (t1 == t2)
+                                        then 1 
+                                        else 0
+
+cantidadDePokemonDe :: TipoDePokemon -> Entrenador -> Int
+cantidadDePokemonDe tipo (Ent nom pok1 pok2) = sumar (siEsPokemonDeTipoDevuelveUno tipo pok1) (siEsPokemonDeTipoDevuelveUno tipo pok2) 
