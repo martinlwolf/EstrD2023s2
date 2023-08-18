@@ -62,14 +62,12 @@ empiezaConM Miercoles = True
 empiezaConM _ = False
 -- c)
 vieneDespues :: DiaDeSemana -> DiaDeSemana -> Bool
-vieneDespues Lunes Domingo = True
-vieneDespues Martes Lunes = True
-vieneDespues Miercoles Martes = True
-vieneDespues Jueves Miercoles = True
-vieneDespues Viernes Jueves = True
-vieneDespues Sabado Viernes = True
-vieneDespues Domingo Sabado = True
-vieneDespues _ _ = False
+vieneDespues Lunes _ = False
+vieneDespues _ Lunes = True
+vieneDespues Domingo _ = True
+vieneDespues _ Domingo = False
+vieneDespues Jueves _ = True
+vieneDespues _ Jueves = False
 
 -- d)
 estaEnElMedio :: DiaDeSemana -> Bool
@@ -130,7 +128,7 @@ data Entrenador = Ent String Pokemon Pokemon
         deriving Show
 --Para probar
 pokDefault1 :: Pokemon
-pokDefault1 = Pok Agua 40
+pokDefault1 = Pok Planta 40
 pokDefault2 :: Pokemon
 pokDefault2 = Pok Fuego 25
 entDefault1 :: Entrenador
@@ -144,10 +142,58 @@ esTipoMasFuerteQue _ _ = False
 superaA :: Pokemon -> Pokemon -> Bool
 superaA (Pok t1 p1) (Pok t2 p2) = esTipoMasFuerteQue t1 t2
 -- b)
+unoSiCeroSino :: Bool -> Int
+unoSiCeroSino True = 1
+unoSiCeroSino False = 0
+
+esTipoAgua :: TipoDePokemon -> Bool
+esTipoAgua Agua = True
+esTipoAgua _ = False
+
+esTipoPlanta :: TipoDePokemon -> Bool
+esTipoPlanta Planta = True
+esTipoPlanta _ = False
+
+esTipoFuego :: TipoDePokemon -> Bool
+esTipoFuego Fuego = True
+esTipoFuego _ = False
+
 siEsPokemonDeTipoDevuelveUno :: TipoDePokemon -> Pokemon -> Int
-siEsPokemonDeTipoDevuelveUno t1 (Pok t2 p) = if (t1 == t2)
-                                        then 1 
-                                        else 0
+siEsPokemonDeTipoDevuelveUno Agua (Pok t p)= unoSiCeroSino (esTipoAgua t)
+siEsPokemonDeTipoDevuelveUno Fuego (Pok t p)= unoSiCeroSino (esTipoFuego t)
+siEsPokemonDeTipoDevuelveUno Planta (Pok t p)= unoSiCeroSino (esTipoPlanta t)
 
 cantidadDePokemonDe :: TipoDePokemon -> Entrenador -> Int
 cantidadDePokemonDe tipo (Ent nom pok1 pok2) = sumar (siEsPokemonDeTipoDevuelveUno tipo pok1) (siEsPokemonDeTipoDevuelveUno tipo pok2) 
+-- c)
+juntarPokemon :: (Entrenador, Entrenador) -> [Pokemon]
+juntarPokemon ((Ent n1 pok1 pok2), (Ent n2 pok3 pok4)) = pok1 : pok2 : pok3 : pok4 : []
+
+--PUNTO 5
+-- 1)
+-- a)
+loMismo :: a -> a
+loMismo a = a 
+-- b)
+siempreSiete :: a -> Int
+siempreSiete a = 7
+-- c)
+swap :: (a,b) -> (b, a)
+swap (x,y) = (y,x)
+-- 2) Son funciones polimorficas porque los parametros no requieren un tipo especifico, permitiendo aceptar estructuras de datos genericas.
+--    Esto es posible porque no se realizan operaciones con el argumento en si.
+
+--PUNTO 6
+-- 2)
+estaVacia :: [a] -> Bool
+estaVacia [] = True
+estaVacia _ = False
+-- 3)
+elPrimero :: [a] -> a
+elPrimero (x : _) = x
+-- 4)
+sinElPrimero :: [a] -> [a]
+sinElPrimero (_:ys) = ys
+-- 5)
+splitHead :: [a] -> (a, [a])
+splitHead x = (head x, sinElPrimero x)
