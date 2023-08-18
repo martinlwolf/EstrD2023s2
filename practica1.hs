@@ -61,13 +61,17 @@ empiezaConM Martes = True
 empiezaConM Miercoles = True
 empiezaConM _ = False
 -- c)
+diaANumero :: DiaDeSemana -> Int -- Convierte un dia de la semana en un numero segun el orden que tenga
+diaANumero Lunes = 1
+diaANumero Martes = 2
+diaANumero Miercoles = 3
+diaANumero Jueves = 4
+diaANumero Viernes = 5
+diaANumero Sabado = 6
+diaANumero Domingo = 7
+
 vieneDespues :: DiaDeSemana -> DiaDeSemana -> Bool
-vieneDespues Lunes _ = False
-vieneDespues _ Lunes = True
-vieneDespues Domingo _ = True
-vieneDespues _ Domingo = False
-vieneDespues Jueves _ = True
-vieneDespues _ Jueves = False
+vieneDespues d1 d2 = (diaANumero d1) > (diaANumero d2)
 
 -- d)
 estaEnElMedio :: DiaDeSemana -> Bool
