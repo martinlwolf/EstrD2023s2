@@ -86,15 +86,15 @@ negar False = True
 -- b)
 implica :: Bool -> Bool -> Bool
 implica True b = b 
-implica False _ = True
+implica _ _= True
 -- c)
 yTambien :: Bool -> Bool -> Bool
 yTambien True b = b
-yTambien False _ = False
+yTambien _ _ = False
 -- d)
 oBien :: Bool -> Bool -> Bool
-oBien True _ = True
-oBien False b = b
+oBien False b =  b
+oBien _ _ = True
 
 --PUNTO 4
 -- 1)
@@ -150,28 +150,23 @@ unoSiCeroSino :: Bool -> Int
 unoSiCeroSino True = 1
 unoSiCeroSino False = 0
 
-esTipoAgua :: TipoDePokemon -> Bool
-esTipoAgua Agua = True
-esTipoAgua _ = False
-
-esTipoPlanta :: TipoDePokemon -> Bool
-esTipoPlanta Planta = True
-esTipoPlanta _ = False
-
-esTipoFuego :: TipoDePokemon -> Bool
-esTipoFuego Fuego = True
-esTipoFuego _ = False
+sonTiposIguales :: TipoDePokemon -> TipoDePokemon -> Bool
+sonTiposIguales Agua Agua = True
+sonTiposIguales Fuego Fuego = True
+sonTiposIguales Planta Planta = True
+sonTiposIguales _ _ = False
 
 siEsPokemonDeTipoDevuelveUno :: TipoDePokemon -> Pokemon -> Int
-siEsPokemonDeTipoDevuelveUno Agua (Pok t p)= unoSiCeroSino (esTipoAgua t)
-siEsPokemonDeTipoDevuelveUno Fuego (Pok t p)= unoSiCeroSino (esTipoFuego t)
-siEsPokemonDeTipoDevuelveUno Planta (Pok t p)= unoSiCeroSino (esTipoPlanta t)
+siEsPokemonDeTipoDevuelveUno t1 (Pok t2 p)= unoSiCeroSino (sonTiposIguales t1 t2)
 
 cantidadDePokemonDe :: TipoDePokemon -> Entrenador -> Int
 cantidadDePokemonDe tipo (Ent nom pok1 pok2) = sumar (siEsPokemonDeTipoDevuelveUno tipo pok1) (siEsPokemonDeTipoDevuelveUno tipo pok2) 
 -- c)
 juntarPokemon :: (Entrenador, Entrenador) -> [Pokemon]
-juntarPokemon ((Ent n1 pok1 pok2), (Ent n2 pok3 pok4)) = pok1 : pok2 : pok3 : pok4 : []
+juntarPokemon ((Ent n1 pok1 pok2), (Ent n2 pok3 pok4)) = (parALista pok1 pok2) ++ (parALista pok3 pok4)
+
+parALista :: a -> a -> [a]
+parALista a b = a : b : []
 
 --PUNTO 5
 -- 1)
@@ -193,11 +188,17 @@ estaVacia :: [a] -> Bool
 estaVacia [] = True
 estaVacia _ = False
 -- 3)
+-- PRECONDICION: la lista no debe estar vacia
 elPrimero :: [a] -> a
 elPrimero (x : _) = x
+elPrimero [] = error "La lista esta vacia"
 -- 4)
+-- PRECONDICION: la lista no debe estar vacia
 sinElPrimero :: [a] -> [a]
 sinElPrimero (_:ys) = ys
+sinElPrimero [] = error "La lista esta vacia"
 -- 5)
+-- PRECONDICION: la lista no debe estar vacia
 splitHead :: [a] -> (a, [a])
-splitHead x = (head x, sinElPrimero x)
+splitHead (x : xs) = (x, xs)
+splitHead [] = error "La lista esta vacia"
