@@ -116,7 +116,7 @@ cambioDeNombre :: String -> Persona -> Persona
 cambioDeNombre n2 (P n e) = P n2 e
 -- e)
 esMayorQueLaOtra :: Persona -> Persona -> Bool
-esMayorQueLaOtra (P n1 e1) (P n2 e2) = e1 > e2
+esMayorQueLaOtra p1 p2 = edad p1 > edad p1
 -- f)
 laQueEsMayor :: Persona -> Persona -> Persona
 laQueEsMayor p1 p2 = if (esMayorQueLaOtra p1 p2)
@@ -156,17 +156,17 @@ sonTiposIguales Fuego Fuego = True
 sonTiposIguales Planta Planta = True
 sonTiposIguales _ _ = False
 
-siEsPokemonDeTipoDevuelveUno :: TipoDePokemon -> Pokemon -> Int
-siEsPokemonDeTipoDevuelveUno t1 (Pok t2 p)= unoSiCeroSino (sonTiposIguales t1 t2)
-
 cantidadDePokemonDe :: TipoDePokemon -> Entrenador -> Int
-cantidadDePokemonDe tipo (Ent nom pok1 pok2) = sumar (siEsPokemonDeTipoDevuelveUno tipo pok1) (siEsPokemonDeTipoDevuelveUno tipo pok2) 
+cantidadDePokemonDe t (Ent nom pok1 pok2) = sumar (unoSiCeroSiNo(sonTiposIguales(t (tipoPok pok1)))) (unoSiCeroSiNo(sonTiposIguales(t (tipoPok pok2)))) 
+
+tipoPok :: Pokemon -> TipoDePokemon
+tipoPok (Pok t p) = t
 -- c)
 juntarPokemon :: (Entrenador, Entrenador) -> [Pokemon]
-juntarPokemon ((Ent n1 pok1 pok2), (Ent n2 pok3 pok4)) = (parALista pok1 pok2) ++ (parALista pok3 pok4)
+juntarPokemon (ent1,ent2) = pokemonesDeEntrenador ent1 ++ pokemonesDeEntrenador ent1
 
-parALista :: a -> a -> [a]
-parALista a b = a : b : []
+pokemonesDeEntrenador :: Entrenador -> [Pokemon]
+pokemonesDeEntrenador (Ent n1 pok1 pok2) = pok1:pok2:[]
 
 --PUNTO 5
 -- 1)
