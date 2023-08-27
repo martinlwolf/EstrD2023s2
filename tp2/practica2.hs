@@ -322,10 +322,6 @@ trabajaEnAlguno (p:ps) rol = if (tieneProyecto p rol)
                                 else trabajaEnAlguno ps rol
 
 --d)
-{-data Seniority = Junior | SemiSenior | Senior
-data Proyecto = ConsProyecto String
-data Rol = Developer Seniority Proyecto | Management Seniority Proyecto
-data Empresa = ConsEmpresa [Rol]-}
 
 asignadosPorProyecto :: Empresa -> [(Proyecto, Int)]
 asignadosPorProyecto (ConsEmpresa lrol) = aPP lrol 
