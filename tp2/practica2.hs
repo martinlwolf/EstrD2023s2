@@ -277,7 +277,7 @@ proyectoDeRol (Management s p) = p
 --b)
 
 losDevSenior :: Empresa -> [Proyecto] -> Int
-losDevSenior (ConsEmpresa roles) proyectos = lds roles proyectos
+losDevSenior (ConsEmpresa roles) proyectos = lds (soloDevs roles) proyectos
 
 --La funcion lds trabaja directamente con la lista de roles de la empresa
 lds :: [Rol] -> [Proyecto] -> Int
@@ -303,6 +303,16 @@ mismaSeniority SemiSenior SemiSenior = True
 mismaSeniority Junior Junior = True
 mismaSeniority _ _ = False
 
+soloDevs :: [Rol] -> [Rol]
+soloDevs [] = []
+soloDevs (r:rs) = if (esDev r)
+                        then r : soloDevs rs
+                        else soloDevs rs
+
+esDev :: Rol -> Bool
+esDev (Developer _ _) = True
+esDev (Management _ _) = False
+
 --c)
 --PRECOND : La lista de proyectos no debe estar vacia
 cantQueTrabajanEn :: [Proyecto] -> Empresa -> Int
@@ -317,9 +327,7 @@ losQueTrabajanEnAlguno lp (r:rs) = if (trabajaEnAlguno lp r)
 
 trabajaEnAlguno :: [Proyecto] -> Rol -> Bool
 trabajaEnAlguno [] _ = False
-trabajaEnAlguno (p:ps) rol = if (tieneProyecto p rol)
-                                then True
-                                else trabajaEnAlguno ps rol
+trabajaEnAlguno (p:ps) rol = tieneProyecto p rol || trabajaEnAlguno ps rol
 
 --d)
 
