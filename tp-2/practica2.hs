@@ -74,10 +74,10 @@ lasDeLongitudMayorA k (n:ns) = if ((longitud n) > k)
                                 then n : lasDeLongitudMayorA k ns
                                 else lasDeLongitudMayorA k ns
 
-{--11)
+--11)
 agregarAlFinal :: [a] -> a -> [a]
-agregarAlFinal [] =
-agregarAlFinal (n:ns) k = n : agregarAlFinal -}
+agregarAlFinal []     k = [k]
+agregarAlFinal (n:ns) k = n : agregarAlFinal ns k
 
 --12)
 agregar :: [a] -> [a] -> [a]
@@ -86,10 +86,10 @@ agregar [] l = l
 agregar l [] = l
 agregar (x:xs) l = x : agregar xs l
 
-{--13)
+--13)
 reversa :: [a] -> [a]
 reversa [] = []
-reversa (n:ns) = -}
+reversa (n:ns) =  agregarAlFinal (reversa ns) n
 
 --14)
 zipMaximos :: [Int] -> [Int] -> [Int]
