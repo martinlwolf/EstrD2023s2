@@ -10,13 +10,11 @@ longitud [] = 0
 longitud (n : ns) = 1 + longitud ns
 
 -- 3)
--- PRECOND: La lista no debe ser vacia
 sucesores :: [Int] -> [Int]
 sucesores [] = []
 sucesores (n : ns) = (n+1) : sucesores ns
 
 -- 4)
--- PRECOND: La lista no debe ser vacia
 conjuncion :: [Bool] -> Bool
 conjuncion [] = True
 conjuncion (n : ns) = if (n)
@@ -37,19 +35,12 @@ disyuncion _ = True
 -- 6)
 aplanar :: [[a]] -> [a]
 aplanar [] = []
-aplanar (l : ls) = l ++ aplanar ls
+aplanar (x : xs) = x ++ aplanar xs
 
 --7)
 pertenece :: Eq a => a -> [a] -> Bool
 pertenece k [] = False
-pertenece k (n:ns) = if (n==k)
-                        then True
-                        else pertenece k ns
-
-pertenecePM :: Eq a => a -> [a] -> Bool
-pertenecePM k [] = False
-pertenecePM k (n:ns) = k == n
-pertenecePM k (_:ns) = pertenecePM k ns
+pertenece k (n:ns) = (n==k) || (pertenece k ns)
 
 --8)
 apariciones :: Eq a => a -> [a] -> Int
@@ -81,7 +72,6 @@ agregarAlFinal (n:ns) k = n : agregarAlFinal ns k
 
 --12)
 agregar :: [a] -> [a] -> [a]
-agregar [] [] = []
 agregar [] l = l
 agregar l [] = l
 agregar (x:xs) l = x : agregar xs l
@@ -93,18 +83,19 @@ reversa (n:ns) =  agregarAlFinal (reversa ns) n
 
 --14)
 zipMaximos :: [Int] -> [Int] -> [Int]
-zipMaximos [] _ = []
-zipMaximos _ [] = []
-zipMaximos (x:xs) (y:ys) = maximoEntre x y : zipMaximos xs ys
+zipMaximos [] xs = xs
+zipMaximos xs [] = xs
+zipMaximos (x:xs) (y:ys) = (maximoEntre x y) : (zipMaximos xs ys)
 
 maximoEntre :: Int -> Int -> Int
 maximoEntre x y = if (x>y)
                     then x
                     else y
 --15)
---PRECOND: La lista no puede estar vacia
+PRECOND: la lista no debe estar vacia
 elMinimo :: Ord a => [a] -> a
-elMinimo [] = error "La lista no puede estar vacia"
+elMinimo [] = error
+elMinimo [x] = x
 elMinimo (n:ns) = if (n < elMinimo ns)
                         then n
                         else elMinimo ns
@@ -118,8 +109,9 @@ factorial n = n * factorial (n-1)
 
 --2)
 cuentaRegresiva :: Int -> [Int]
-cuentaRegresiva 0 = []
-cuentaRegresiva n = n : cuentaRegresiva (n-1)
+cuentaRegresiva n =if (n < 1)
+                        then [] 
+                        else n : cuentaRegresiva (n-1)
 
 --3)
 repetir :: Int -> a -> [a]
@@ -153,8 +145,9 @@ mayoresA k (n:ns) = if ((edad n) > k)
                         else mayoresA k ns
 
 --b)
+--PRECOND:"la lista no debe ser vacia"
 promedioEdad :: [Persona] -> Int
-promedioEdad [] = 0
+promedioEdad [] = error "la lista no debe ser vacia"
 promedioEdad personas = div (sumatoria (listaDeEdades personas)) (longitud personas)
 
 listaDeEdades :: [Persona] -> [Int]
@@ -162,8 +155,10 @@ listaDeEdades [] = []
 listaDeEdades (n:ns) = (edad n) : listaDeEdades ns
 
 --c)
+--PRECOND:"la lista no debe ser vacia"
 elMasViejo :: [Persona] -> Persona
-elMasViejo [] = P "default" 0
+elMasViejo [] = error "la lista no debe ser vacia"
+elMasViejo [x] = P "default" 0
 elMasViejo (n:ns) = if ((edad n) > (edad (elMasViejo ns)))
                         then n
                         else elMasViejo ns
