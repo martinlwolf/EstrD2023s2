@@ -138,12 +138,12 @@ aparicionesT :: Eq a => a -> Tree a -> Int
 aparicionesT a EmptyT = 0
 aparicionesT a (NodeT b tree1 tree2) = unoSi(a == b) + (aparicionesT a tree1) + (aparicionesT a tree2)
 
---6)
+{--6)
 leaves :: Tree a -> [a]
 leaves EmptyT = []
 leaves (NodeT a tree1 tree2) = if(esHoja a)
                                 then [a]
-                                else  ((leaves tree1) ++ (leaves tree2))
+                                else  ((leaves tree1) ++ (leaves tree2))--}
 
 esHoja :: Tree a -> Bool
 esHoja EmptyT = True
@@ -202,26 +202,28 @@ agregarACadaLista x (ls:lss) = (x : ls) : (agregarACadaLista x lss)
 
 
 --PUNTO 2.2
-{--data ExpA = Valor Int
-| Sum ExpA ExpA
-| Prod ExpA ExpA
-| Neg ExpA
+data ExpA = Valor Int | Sum ExpA ExpA | Prod ExpA ExpA | Neg ExpA
 --1)
 eval :: ExpA -> Int
-eval Valor n = n
-eval Sum exp1 exp2 = (eval exp1) + (eval exp2)
-eval Prod exp1 exp2 = (eval exp1) * (eval exp2)
-eval Neg exp = (-1) * (eval exp)
+eval (Valor n) = n
+eval (Sum exp1 exp2) = (eval exp1) + (eval exp2)
+eval (Prod exp1 exp2) = (eval exp1) * (eval exp2)
+eval (Neg exp) = (-1) * (eval exp)
 
---2)
+{--2)
 simplificar :: ExpA -> ExpA
-simplificar Valor n = n
-simplificar Sum 0 exp2 = exp2
-simplificar Sum exp1 0 = exp1
-simplificar Prod 0 exp2 = 0
-simplificar Prod exp1 0 = 0
-simplificar Prod 1 exp2 = exp2
-simplificar Prod exp1 1 = exp1
-simplificar Neg exp = if((eval exp) < 0)
-                        then exp
---}
+simplificar (Valor n) = n
+simplificar (Sum exp1 exp2) = simplSuma exp1 exp2
+simplificar (Prod exp1 exp2) = simplProd exp1 exp2
+simplificar (Neg (Neg exp)) = exp
+
+simplSuma :: ExpA -> ExpA -> ExpA
+simplSuma (Sum 0 exp2) = exp2
+simplSuma (Sum exp1 0) = exp1
+simplSuma (Sum exp1 exp2) = (eval exp1) + (eval exp2)
+
+simplProd :: ExpA -> ExpA -> ExpA
+simplProd (Prod 0 exp2) = 0
+simplProd (Prod exp1 0) = 0
+simplProd (Prod 1 exp2) = exp2
+simplProd (Prod exp1 1) = exp1--}
