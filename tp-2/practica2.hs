@@ -17,25 +17,21 @@ sucesores (n : ns) = (n+1) : sucesores ns
 -- 4)
 conjuncion :: [Bool] -> Bool
 conjuncion [] = True
-conjuncion (n : ns) = if (n)
-                        then conjuncion ns
+conjuncion (b : bs) = if (b)
+                        then conjuncion bs
                         else False
-
-conjuncionPM :: [Bool] -> Bool
-conjuncionPM [] = True
-conjuncionPM (True : ns) = conjuncionPM ns
-conjuncionPM _ = False
 
 -- 5)
 disyuncion :: [Bool] -> Bool
 disyuncion [] = False
-disyuncion (False:ns) = disyuncion ns
-disyuncion _ = True
+disyuncion (b : bs) = if (b)
+                        then True
+                        else disyuncion bs
 
 -- 6)
 aplanar :: [[a]] -> [a]
 aplanar [] = []
-aplanar (x : xs) = x ++ aplanar xs
+aplanar (xs : xss) = xs ++ aplanar xss
 
 --7)
 pertenece :: Eq a => a -> [a] -> Bool
@@ -61,9 +57,9 @@ losMenoresA k (n:ns) = if (n<k)
 --10)
 lasDeLongitudMayorA :: Int -> [[a]] -> [[a]]
 lasDeLongitudMayorA k [] = [] 
-lasDeLongitudMayorA k (n:ns) = if ((longitud n) > k)
-                                then n : lasDeLongitudMayorA k ns
-                                else lasDeLongitudMayorA k ns
+lasDeLongitudMayorA k (xs:xss) = if ((longitud xs) > k)
+                                then xs : lasDeLongitudMayorA k xss
+                                else lasDeLongitudMayorA k xss
 
 --11)
 agregarAlFinal :: [a] -> a -> [a]
@@ -92,9 +88,9 @@ maximoEntre x y = if (x>y)
                     then x
                     else y
 --15)
-PRECOND: la lista no debe estar vacia
+--PRECOND: la lista no debe estar vacia
 elMinimo :: Ord a => [a] -> a
-elMinimo [] = error
+elMinimo [] = error "la lista no debe estar vacia"
 elMinimo [x] = x
 elMinimo (n:ns) = if (n < elMinimo ns)
                         then n
@@ -159,9 +155,12 @@ listaDeEdades (n:ns) = (edad n) : listaDeEdades ns
 elMasViejo :: [Persona] -> Persona
 elMasViejo [] = error "la lista no debe ser vacia"
 elMasViejo [x] = P "default" 0
-elMasViejo (n:ns) = if ((edad n) > (edad (elMasViejo ns)))
+elMasViejo (n:ns) = if (esMasViejoQue n (elMasViejo ns))
                         then n
                         else elMasViejo ns
+
+esMasViejoQue :: Persona -> Persona -> Bool
+esMasViejoQue (P n edad1) (P n2 edad2) = edad1 > edad2
 
 --2)
 --Para probar
@@ -213,9 +212,7 @@ losQueLeGananATodosDe (p:ps) listap = if(superaATodosLosDe p listap)
 
 superaATodosLosDe :: Pokemon -> [Pokemon] -> Bool
 superaATodosLosDe _ [] = True
-superaATodosLosDe pk (p:ps) = if(superaA pk p)
-                                then superaATodosLosDe pk ps
-                                else False
+superaATodosLosDe pk (p:ps) = (superaA pk p) || (superaATodosLosDe pk ps)
 
 losDeTipo :: TipoDePokemon -> [Pokemon] -> [Pokemon]
 losDeTipo _ [] = []
@@ -237,7 +234,8 @@ esMaestroPokemon :: Entrenador -> Bool
 esMaestroPokemon (ConsEntrenador n listap) = hayPokemonDeTipo Agua listap && hayPokemonDeTipo Planta listap && hayPokemonDeTipo Fuego listap
 
 hayPokemonDeTipo :: TipoDePokemon -> [Pokemon] -> Bool
-hayPokemonDeTipo t listap = (longitud (pokemonesDeTipo t listap)) > 0
+hayPokemonDeTipo t (p:ps) = (sonTiposIguales t (tipoPok p)) || (hayPokemonDeTipo t ps)
+
 
 --3)
 data Seniority = Junior | SemiSenior | Senior
@@ -251,19 +249,16 @@ proyectos (ConsEmpresa lrol) = proyectosDeRoles lrol
 
 proyectosDeRoles :: [Rol] -> [Proyecto]
 proyectosDeRoles [] = []
-proyectosDeRoles (n:ns) = if(noEstaElProyecto_En (proyectoDeRol n) (proyectosDeRoles ns))
+proyectosDeRoles (n:ns) = if(noEstaElProyecto_En (proyectoDeRol n) ns)
                                 then proyectoDeRol n : proyectosDeRoles ns
                                 else proyectosDeRoles ns
 
-noEstaElProyecto_En :: Proyecto -> [Proyecto] -> Bool
+noEstaElProyecto_En :: Proyecto -> [Rol] -> Bool
 noEstaElProyecto_En pr [] = True
-noEstaElProyecto_En pr (p:ps) = if (sonMismoProyecto pr p)
-                                        then False
-                                        else (noEstaElProyecto_En pr ps)
+noEstaElProyecto_En pr (r:rs) = not(sonMismoProyecto pr (proyectoDeRol r)) || (noEstaElProyecto_En pr rs)
 
 sonMismoProyecto :: Proyecto -> Proyecto -> Bool
 sonMismoProyecto (ConsProyecto s1) (ConsProyecto s2) = s1 == s2
-sonMismoProyecto _ _ = False
 
 proyectoDeRol :: Rol -> Proyecto
 proyectoDeRol (Developer s p) = p
@@ -272,22 +267,19 @@ proyectoDeRol (Management s p) = p
 --b)
 
 losDevSenior :: Empresa -> [Proyecto] -> Int
-losDevSenior (ConsEmpresa roles) proyectos = lds (soloDevs roles) proyectos
+losDevSenior (ConsEmpresa roles) proyectos = losDevSeniorConRoles (soloSeniors(soloDevs roles)) proyectos
 
 --La funcion lds trabaja directamente con la lista de roles de la empresa
-lds :: [Rol] -> [Proyecto] -> Int
-lds [] _ = 0
-lds roles [] = longitud roles
-lds (r:rs) proyectos = if ((esSenior r) && (trabajaEnAlguno proyectos r))
-                        then 1 + (lds rs proyectos)
-                        else (lds rs proyectos)
+losDevSeniorConRoles :: [Rol] -> [Proyecto] -> Int
+losDevSeniorConRoles [] _ = 0
+losDevSeniorConRoles (r:rs) proyectos = (unoSiCeroSiNo (trabajaEnAlguno proyectos r)) + (losDevSeniorConRoles rs proyectos)
 
 esSenior :: Rol -> Bool
 esSenior (Developer s p) = mismaSeniority s Senior
 esSenior (Management s p) = mismaSeniority s Senior
 
 tieneProyecto :: Proyecto -> Rol -> Bool
-tieneProyecto p r = (nombreProyecto (proyectoDeRol r)) == (nombreProyecto p)
+tieneProyecto p r = (nombreProyecto p) == (nombreProyecto (proyectoDeRol r))
 
 nombreProyecto :: Proyecto -> String
 nombreProyecto (ConsProyecto s) = s
@@ -304,6 +296,12 @@ soloDevs (r:rs) = if (esDev r)
                         then r : soloDevs rs
                         else soloDevs rs
 
+soloSeniors :: [Rol] -> [Rol]
+soloSeniors [] = []
+soloSeniors (r:rs) = if (esSenior r)
+                        then r : soloSeniors rs
+                        else soloSeniors rs
+
 esDev :: Rol -> Bool
 esDev (Developer _ _) = True
 esDev (Management _ _) = False
@@ -315,7 +313,7 @@ cantQueTrabajanEn lp (ConsEmpresa lrol) = longitud (losQueTrabajanEnAlguno lp lr
 
 losQueTrabajanEnAlguno :: [Proyecto] -> [Rol] -> [Rol]
 losQueTrabajanEnAlguno _ [] = []
-losQueTrabajanEnAlguno [] _ = error "No hay proyectos"
+losQueTrabajanEnAlguno [] (r:rs) = (r:rs) 
 losQueTrabajanEnAlguno lp (r:rs) = if (trabajaEnAlguno lp r)
                                         then r : losQueTrabajanEnAlguno lp rs
                                         else losQueTrabajanEnAlguno lp rs
@@ -326,23 +324,15 @@ trabajaEnAlguno (p:ps) rol = tieneProyecto p rol || trabajaEnAlguno ps rol
 
 --d)
 
-asignadosPorProyecto :: Empresa -> [(Proyecto, Int)]
-asignadosPorProyecto (ConsEmpresa lrol) = aPP lrol 
+asignadosPorProyecto :: Empresa -> [(Proyecto,Int)]
+asignadosPorProyecto (ConsEmpresa rs) = contarProy rs
 
-aPP :: [Rol] -> [(Proyecto, Int)]
-aPP [] = []
-aPP (r:rs) = if(noEstaElProyecto_EnListaDeTuplas (proyectoDeRol r) (aPP rs))
-                then (cantidadDeVecesQueAparece_En (proyectoDeRol r) rs) : aPP rs
-                else aPP rs
+contarProy :: [Rol] -> [(Proyecto, Int)]
+contarProy [] = []
+contarProy (r:rs) = sumarProyecto r (contarProy rs)
 
-noEstaElProyecto_EnListaDeTuplas :: Proyecto -> [(Proyecto,Int)] -> Bool
-noEstaElProyecto_EnListaDeTuplas pr [] = True
-noEstaElProyecto_EnListaDeTuplas pr (t:ts) = if(sonMismoProyecto pr (fst t))
-                                                then False
-                                                else noEstaElProyecto_EnListaDeTuplas pr ts
-
-cantidadDeVecesQueAparece_En :: Proyecto -> [Rol] -> (Proyecto,Int)
-cantidadDeVecesQueAparece_En pr [] = (pr,1)
-cantidadDeVecesQueAparece_En pr (r:rs) = if(sonMismoProyecto pr (proyectoDeRol r))
-                                                then (pr, 1 + (snd(cantidadDeVecesQueAparece_En pr rs)))
-                                                else cantidadDeVecesQueAparece_En pr rs
+sumarProyecto :: Rol -> [(Proyecto, Int)] -> [(Proyecto, Int)]
+sumarProyecto r [] = []
+sumarProyecto r ((p,n) : ps) = if (tieneProyecto p r)
+                                then (p,n+1) : ps
+                                else (p,n) : sumarProyecto r ps
