@@ -210,20 +210,21 @@ eval (Sum exp1 exp2) = (eval exp1) + (eval exp2)
 eval (Prod exp1 exp2) = (eval exp1) * (eval exp2)
 eval (Neg exp) = (-1) * (eval exp)
 
-{--2)
+--2)
 simplificar :: ExpA -> ExpA
-simplificar (Valor n) = n
+simplificar (Valor n) = (Valor n)
 simplificar (Sum exp1 exp2) = simplSuma exp1 exp2
 simplificar (Prod exp1 exp2) = simplProd exp1 exp2
 simplificar (Neg (Neg exp)) = exp
 
 simplSuma :: ExpA -> ExpA -> ExpA
-simplSuma (Sum 0 exp2) = exp2
-simplSuma (Sum exp1 0) = exp1
-simplSuma (Sum exp1 exp2) = (eval exp1) + (eval exp2)
+simplSuma (Valor 0) exp2 = exp2
+simplSuma exp1 (Valor 0) = exp1
+simplSuma exp1 exp2 = (Valor ((eval exp1) + (eval exp2)))
 
 simplProd :: ExpA -> ExpA -> ExpA
-simplProd (Prod 0 exp2) = 0
-simplProd (Prod exp1 0) = 0
-simplProd (Prod 1 exp2) = exp2
-simplProd (Prod exp1 1) = exp1--}
+simplProd (Valor 0) exp2 = (Valor 0)
+simplProd exp1 (Valor 0) = (Valor 0)
+simplProd (Valor 1) exp2 = exp2
+simplProd exp1 (Valor 1) = exp1
+simplProd exp1 exp2 = (Valor ((eval exp1) * (eval exp2)))
