@@ -128,7 +128,7 @@ tesorosDeCofre (Cofre objs) = objs
 
 --6)
 todosLosCaminos :: Mapa -> [[Dir]]
-todosLosCaminos (Fin cofre) = [[Izq]]
+todosLosCaminos (Fin cofre) = [[]]
 todosLosCaminos (Bifurcacion cofre map1 map2) = (agregarACadaLista Izq (todosLosCaminos map1)) ++ (agregarACadaLista Der (todosLosCaminos map2))
 
 agregarACadaLista :: a -> [[a]] -> [[a]]
@@ -367,3 +367,26 @@ agregarNombreASiExploro nom t territorios nombres = if (pertenece t territorios)
 pertenece :: Eq a => a -> [a] -> Bool
 pertenece k [] = False
 pertenece k (n:ns) = (n==k) || (pertenece k ns)
+
+--5)
+exploradoresPorTerritorio :: Manada -> [(Territorio, [Nombre])]
+exploradoresPorTerritorio (M lobo) = exploradoresPorTerritorio lobo
+
+exploradoresPorTerritorio :: Lobo -> [(Territorio, [Nombre])]
+exploradoresPorTerritorio (Cria n) = []
+exploradoresPorTerritorio (Explorador n territorios lobo1 lobo2) = agregarExplorador n territorios
+                                                                      (juntarTerritorio (exploradoresPorTerritorio lobo1)
+                                                                                      (exploradoresPorTerritorio lobo2))
+exploradoresPorTerritorio (Cazador _ _ lobo1 lobo2 lobo3)   = juntarTerritorio( (exploradoresPorTerritorio lobo3)
+                                                                    (juntarTerritorio (exploradoresPorTerritorio lobo1)
+                                                                                      (exploradoresPorTerritorio lobo2)))
+
+agregarExplorador :: Nombre -> [Territorio] -> [(Territorio, [Nombre])] -> [(Territorio, [Nombre])]
+agregarExplorador n [] lss = lss
+agregarExplorador n (t:ts) lss = agregarATerreno n t (agregarExplorador n ts lss)
+
+agregarATerreno :: Nombre -> Territorio -> [(Territorio, [Nombre])]
+agregarATerreno n t [] = [(t,n)]
+agregarATerreno n t ((t2,ns) : tss) = if (t == t2)
+                                        then (t, n:ns) : tss
+                                        else (t, ns) : agregarATerreno n t tss
