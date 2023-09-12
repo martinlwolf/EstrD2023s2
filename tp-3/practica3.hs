@@ -81,8 +81,9 @@ caminoSinElPrimero (Nada camino) = camino
 
 --d)
 alMenosNTesoros :: Int -> Camino -> Bool
-alMenosNTesoros n Fin = n == 0 
-alMenosNTesoros n (Cofre objs camino) = if(n > cuantosSonTesoro objs)
+alMenosNTesoros 0 _ = True
+alMenosNTesoros _ Fin = False
+alMenosNTesoros n (Cofre objs camino) = if(n >= cuantosSonTesoro objs)
                                             then alMenosNTesoros (n - (cuantosSonTesoro objs)) camino
                                             else True
 alMenosNTesoros n (Nada camino)    = alMenosNTesoros n camino 
