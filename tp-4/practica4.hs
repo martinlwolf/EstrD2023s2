@@ -350,3 +350,20 @@ elAlfaEntre (n1,int1) (n2,int2) = if (int1 > int2)
 
 --4)
 losQueExploraron :: Territorio -> Manada -> [Nombre]
+losQueExploraron t (M lobo) = losNombresDeLobosQueExploraron t lobo
+
+losNombresDeLobosQueExploraron :: Territorio -> Lobo -> [Nombre]
+losNombresDeLobosQueExploraron t (Cria _) = []
+losNombresDeLobosQueExploraron t (Explorador n territorios lobo1 lobo2) = agregarNombreASiExploro n t territorios ((losNombresDeLobosQueExploraron t lobo1) ++
+                                                                                                        (losNombresDeLobosQueExploraron t lobo2))
+losNombresDeLobosQueExploraron t (Cazador n _ lobo1 lobo2 lobo3) = ((losNombresDeLobosQueExploraron t lobo1) ++
+                                                                    (losNombresDeLobosQueExploraron t lobo2)) ++ (losNombresDeLobosQueExploraron t lobo3)
+
+agregarNombreASiExploro :: Nombre -> Territorio -> [Territorio] -> [Nombre] -> [Nombre]
+agregarNombreASiExploro nom t territorios nombres = if (pertenece t territorios)
+                                                        then nom : nombres
+                                                        else nombres
+
+pertenece :: Eq a => a -> [a] -> Bool
+pertenece k [] = False
+pertenece k (n:ns) = (n==k) || (pertenece k ns)
