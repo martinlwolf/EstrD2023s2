@@ -17,16 +17,12 @@ sucesores (n : ns) = (n+1) : sucesores ns
 -- 4)
 conjuncion :: [Bool] -> Bool
 conjuncion [] = True
-conjuncion (b : bs) = if (b)
-                        then conjuncion bs
-                        else False
+conjuncion (b : bs) = b && conjuncion bs
 
 -- 5)
 disyuncion :: [Bool] -> Bool
 disyuncion [] = False
-disyuncion (b : bs) = if (b)
-                        then True
-                        else disyuncion bs
+disyuncion (b : bs) = b || disyuncion bs
 
 -- 6)
 aplanar :: [[a]] -> [a]
@@ -69,7 +65,6 @@ agregarAlFinal (n:ns) k = n : agregarAlFinal ns k
 --12)
 agregar :: [a] -> [a] -> [a]
 agregar [] l = l
-agregar l [] = l
 agregar (x:xs) l = x : agregar xs l
 
 --13)
@@ -154,7 +149,7 @@ listaDeEdades (n:ns) = (edad n) : listaDeEdades ns
 --PRECOND:"la lista no debe ser vacia"
 elMasViejo :: [Persona] -> Persona
 elMasViejo [] = error "la lista no debe ser vacia"
-elMasViejo [x] = P "default" 0
+elMasViejo [x] = x
 elMasViejo (n:ns) = if (esMasViejoQue n (elMasViejo ns))
                         then n
                         else elMasViejo ns
@@ -249,13 +244,14 @@ proyectos (ConsEmpresa lrol) = proyectosDeRoles lrol
 
 proyectosDeRoles :: [Rol] -> [Proyecto]
 proyectosDeRoles [] = []
-proyectosDeRoles (n:ns) = if(noEstaElProyecto_En (proyectoDeRol n) ns)
-                                then proyectoDeRol n : proyectosDeRoles ns
-                                else proyectosDeRoles ns
+proyectosDeRoles (n:ns) = let proyectosSinRepetir = proyectosDeRoles ns in
+                                if(noEstaElProyecto_En (proyectoDeRol n) proyectosSinRepetir)
+                                        then proyectoDeRol n : proyectosDeRoles ns
+                                        else proyectosDeRoles ns
 
-noEstaElProyecto_En :: Proyecto -> [Rol] -> Bool
+noEstaElProyecto_En :: Proyecto -> [Proyecto] -> Bool
 noEstaElProyecto_En pr [] = True
-noEstaElProyecto_En pr (r:rs) = not(sonMismoProyecto pr (proyectoDeRol r)) || (noEstaElProyecto_En pr rs)
+noEstaElProyecto_En pr (p:ps) = not(sonMismoProyecto pr p) && (noEstaElProyecto_En pr ps)
 
 sonMismoProyecto :: Proyecto -> Proyecto -> Bool
 sonMismoProyecto (ConsProyecto s1) (ConsProyecto s2) = s1 == s2
@@ -267,12 +263,12 @@ proyectoDeRol (Management s p) = p
 --b)
 
 losDevSenior :: Empresa -> [Proyecto] -> Int
-losDevSenior (ConsEmpresa roles) proyectos = losDevSeniorConRoles (soloSeniors(soloDevs roles)) proyectos
+losDevSenior (ConsEmpresa roles) proyectos = losQueSonDevsSenior (soloSeniors(soloDevs roles)) proyectos
 
 --La funcion lds trabaja directamente con la lista de roles de la empresa
-losDevSeniorConRoles :: [Rol] -> [Proyecto] -> Int
-losDevSeniorConRoles [] _ = 0
-losDevSeniorConRoles (r:rs) proyectos = (unoSiCeroSiNo (trabajaEnAlguno proyectos r)) + (losDevSeniorConRoles rs proyectos)
+losQueSonDevsSenior :: [Rol] -> [Proyecto] -> Int
+losQueSonDevsSenior [] _ = 0
+losQueSonDevsSenior (r:rs) proyectos = (unoSiCeroSiNo (trabajaEnAlguno proyectos r)) + (losQueSonDevsSenior rs proyectos)
 
 esSenior :: Rol -> Bool
 esSenior (Developer s p) = mismaSeniority s Senior
@@ -309,18 +305,22 @@ esDev (Management _ _) = False
 --c)
 --PRECOND : La lista de proyectos no debe estar vacia
 cantQueTrabajanEn :: [Proyecto] -> Empresa -> Int
-cantQueTrabajanEn lp (ConsEmpresa lrol) = longitud (losQueTrabajanEnAlguno lp lrol)
+cantQueTrabajanEn lp (ConsEmpresa lrol) = longitud (losQueTrabajanEnTodos lp lrol)
 
-losQueTrabajanEnAlguno :: [Proyecto] -> [Rol] -> [Rol]
-losQueTrabajanEnAlguno _ [] = []
-losQueTrabajanEnAlguno [] (r:rs) = (r:rs) 
-losQueTrabajanEnAlguno lp (r:rs) = if (trabajaEnAlguno lp r)
-                                        then r : losQueTrabajanEnAlguno lp rs
-                                        else losQueTrabajanEnAlguno lp rs
+losQueTrabajanEnTodos :: [Proyecto] -> [Rol] -> [Rol]
+losQueTrabajanEnTodos _ [] = []
+losQueTrabajanEnTodos [] (r:rs) = (r:rs) 
+losQueTrabajanEnTodos lp (r:rs) = if (trabajaEnTodos lp r)
+                                        then r : losQueTrabajanEnTodos lp rs
+                                        else losQueTrabajanEnTodos lp rs
 
 trabajaEnAlguno :: [Proyecto] -> Rol -> Bool
 trabajaEnAlguno [] _ = False
 trabajaEnAlguno (p:ps) rol = tieneProyecto p rol || trabajaEnAlguno ps rol
+
+trabajaEnTodos :: [Proyecto] -> Rol -> Bool
+trabajaEnTodos [] _ = False
+trabajaEnTodos (p:ps) rol = tieneProyecto p rol && trabajaEnTodos ps rol
 
 --d)
 
@@ -334,5 +334,5 @@ contarProy (r:rs) = sumarProyecto r (contarProy rs)
 sumarProyecto :: Rol -> [(Proyecto, Int)] -> [(Proyecto, Int)]
 sumarProyecto r [] = []
 sumarProyecto r ((p,n) : ps) = if (tieneProyecto p r)
-                                then (p,n+1) : ps
+                                then (p,n+1) : sumarProyecto r ps
                                 else (p,n) : sumarProyecto r ps
