@@ -372,14 +372,14 @@ pertenece k (n:ns) = (n==k) || (pertenece k ns)
 exploradoresPorTerritorio :: Manada -> [(Territorio, [Nombre])]
 exploradoresPorTerritorio (M lobo) = exploradoresPorTerritorio lobo
 
-exploradoresPorTerritorio :: Lobo -> [(Territorio, [Nombre])]
-exploradoresPorTerritorio (Cria n) = []
-exploradoresPorTerritorio (Explorador n territorios lobo1 lobo2) = agregarExplorador n territorios
-                                                                      (juntarTerritorio (exploradoresPorTerritorio lobo1)
-                                                                                      (exploradoresPorTerritorio lobo2))
-exploradoresPorTerritorio (Cazador _ _ lobo1 lobo2 lobo3)   = juntarTerritorio( (exploradoresPorTerritorio lobo3)
-                                                                    (juntarTerritorio (exploradoresPorTerritorio lobo1)
-                                                                                      (exploradoresPorTerritorio lobo2)))
+exploradoresPorTerritorioEnLobos :: Lobo -> [(Territorio, [Nombre])]
+exploradoresPorTerritorioEnLobos (Cria n) = []
+exploradoresPorTerritorioEnLobos (Explorador n territorios lobo1 lobo2) = agregarExplorador n territorios
+                                                                      (juntarTerritorio (exploradoresPorTerritorioEnLobos lobo1)
+                                                                                      (exploradoresPorTerritorioEnLobos lobo2))
+exploradoresPorTerritorioEnLobos (Cazador _ _ lobo1 lobo2 lobo3)   = juntarTerritorio( (exploradoresPorTerritorioEnLobos lobo3)
+                                                                    (juntarTerritorio (exploradoresPorTerritorioEnLobos lobo1)
+                                                                                      (exploradoresPorTerritorioEnLobos lobo2)))
 
 agregarExplorador :: Nombre -> [Territorio] -> [(Territorio, [Nombre])] -> [(Territorio, [Nombre])]
 agregarExplorador n [] lss = lss
