@@ -390,3 +390,14 @@ agregarATerreno n t [] = [(t,n)]
 agregarATerreno n t ((t2,ns) : tss) = if (t == t2)
                                         then (t, n:ns) : tss
                                         else (t, ns) : agregarATerreno n t tss
+juntarTerritorio :: [(Territorio, [Nombre])] -> [(Territorio, [Nombre])] -> [(Territorio, [Nombre])]
+juntarTerritorio [] ls = ls
+juntarTerritorio ls [] = ls
+juntarTerritorio ((t,ns) : tss) tss2 =  agregarTerritorioConNombres (t,ns) (juntarTerritorio tss tss2)
+
+agregarTerritorioConNombres :: (Territorio, [Nombre]) -> [(Territorio, [Nombre])] -> [(Territorio, [Nombre])]
+agregarTerritorioConNombres tn [] = [tn]
+agregarTerritorioConNombres (t, ns) ((t2,ns2):tss) = if (t==t2)
+                                                      then (t,(appendSinReps ns ns2)) : agregarTerritorioConNombres (t,ns) tss
+                                                      else agregarTerritorioConNombres (t,ns) tss
+
