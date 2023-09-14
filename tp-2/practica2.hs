@@ -207,7 +207,7 @@ losQueLeGananATodosDe (p:ps) listap = if(superaATodosLosDe p listap)
 
 superaATodosLosDe :: Pokemon -> [Pokemon] -> Bool
 superaATodosLosDe _ [] = True
-superaATodosLosDe pk (p:ps) = (superaA pk p) || (superaATodosLosDe pk ps)
+superaATodosLosDe pk (p:ps) = (superaA pk p) && (superaATodosLosDe pk ps)
 
 losDeTipo :: TipoDePokemon -> [Pokemon] -> [Pokemon]
 losDeTipo _ [] = []
