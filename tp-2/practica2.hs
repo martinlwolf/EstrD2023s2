@@ -207,7 +207,7 @@ losQueLeGananATodosDe (p:ps) listap = if(superaATodosLosDe p listap)
 
 superaATodosLosDe :: Pokemon -> [Pokemon] -> Bool
 superaATodosLosDe _ [] = True
-superaATodosLosDe pk (p:ps) = (superaA pk p) || (superaATodosLosDe pk ps)
+superaATodosLosDe pk (p:ps) = (superaA pk p) && (superaATodosLosDe pk ps)
 
 losDeTipo :: TipoDePokemon -> [Pokemon] -> [Pokemon]
 losDeTipo _ [] = []
@@ -332,7 +332,7 @@ contarProy [] = []
 contarProy (r:rs) = sumarProyecto r (contarProy rs)
 
 sumarProyecto :: Rol -> [(Proyecto, Int)] -> [(Proyecto, Int)]
-sumarProyecto r [] = []
+sumarProyecto r [] = [(proyectoDeRol r, 1)]
 sumarProyecto r ((p,n) : ps) = if (tieneProyecto p r)
                                 then (p,n+1) : sumarProyecto r ps
                                 else (p,n) : sumarProyecto r ps

@@ -363,6 +363,9 @@ agregarNombreASiExploro :: Nombre -> Territorio -> [Territorio] -> [Nombre] -> [
 agregarNombreASiExploro nom t territorios nombres = if (pertenece t territorios)
                                                         then nom : nombres
                                                         else nombres
+
+
+
 --5)
 exploradoresPorTerritorio :: Manada -> [(Territorio, [Nombre])]
 exploradoresPorTerritorio (M lobo) = exploradoresPorTerritorioEnLobos lobo
@@ -433,3 +436,5 @@ esCazadorConNombre :: Nombre -> Lobo -> Bool
 esCazadorConNombre n (Cria _) = False
 esCazadorConNombre n (Explorador _ _ _ _)    = False
 esCazadorConNombre n (Cazador n2 _ _ _ _) = n == n2
+esCazadorConNombre n (Cazador n2 _ _ _ _) = n == n2
+                            
