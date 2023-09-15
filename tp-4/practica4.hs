@@ -363,23 +363,18 @@ agregarNombreASiExploro :: Nombre -> Territorio -> [Territorio] -> [Nombre] -> [
 agregarNombreASiExploro nom t territorios nombres = if (pertenece t territorios)
                                                         then nom : nombres
                                                         else nombres
-
-pertenece :: Eq a => a -> [a] -> Bool
-pertenece k [] = False
-pertenece k (n:ns) = (n==k) || (pertenece k ns)
-
 --5)
 exploradoresPorTerritorio :: Manada -> [(Territorio, [Nombre])]
-exploradoresPorTerritorio (M lobo) = exploradoresPorTerritorio lobo
+exploradoresPorTerritorio (M lobo) = exploradoresPorTerritorioEnLobos lobo
 
-exploradoresPorTerritorio :: Lobo -> [(Territorio, [Nombre])]
-exploradoresPorTerritorio (Cria n) = []
-exploradoresPorTerritorio (Explorador n territorios lobo1 lobo2) = agregarExplorador n territorios
-                                                                      (juntarTerritorio (exploradoresPorTerritorio lobo1)
-                                                                                      (exploradoresPorTerritorio lobo2))
-exploradoresPorTerritorio (Cazador _ _ lobo1 lobo2 lobo3)   = juntarTerritorio( (exploradoresPorTerritorio lobo3)
-                                                                    (juntarTerritorio (exploradoresPorTerritorio lobo1)
-                                                                                      (exploradoresPorTerritorio lobo2)))
+exploradoresPorTerritorioEnLobos :: Lobo -> [(Territorio, [Nombre])]
+exploradoresPorTerritorioEnLobos (Cria n) = []
+exploradoresPorTerritorioEnLobos (Explorador n territorios lobo1 lobo2) = agregarExplorador n territorios
+                                                                      (juntarTerritorio (exploradoresPorTerritorioEnLobos lobo1)
+                                                                                      (exploradoresPorTerritorioEnLobos lobo2))
+exploradoresPorTerritorioEnLobos (Cazador _ _ lobo1 lobo2 lobo3)   = juntarTerritorio( (exploradoresPorTerritorioEnLobos lobo3)
+                                                                    (juntarTerritorio (exploradoresPorTerritorioEnLobos lobo1)
+                                                                                      (exploradoresPorTerritorioEnLobos lobo2)))
 
 agregarExplorador :: Nombre -> [Territorio] -> [(Territorio, [Nombre])] -> [(Territorio, [Nombre])]
 agregarExplorador n [] lss = lss
@@ -390,3 +385,51 @@ agregarATerreno n t [] = [(t,n)]
 agregarATerreno n t ((t2,ns) : tss) = if (t == t2)
                                         then (t, n:ns) : tss
                                         else (t, ns) : agregarATerreno n t tss
+juntarTerritorio :: [(Territorio, [Nombre])] -> [(Territorio, [Nombre])] -> [(Territorio, [Nombre])]
+juntarTerritorio [] ls = ls
+juntarTerritorio ls [] = ls
+juntarTerritorio ((t,ns) : tss) tss2 =  agregarTerritorioConNombres (t,ns) (juntarTerritorio tss tss2)
+
+agregarTerritorioConNombres :: (Territorio, [Nombre]) -> [(Territorio, [Nombre])] -> [(Territorio, [Nombre])]
+agregarTerritorioConNombres tn [] = [tn]
+agregarTerritorioConNombres (t, ns) ((t2,ns2):tss) = if (t==t2)
+                                                      then (t,(appendSinReps ns ns2)) : tss
+                                                      else (t2,ns2) : agregarTerritorioConNombres (t,ns) tss
+
+appendSinReps :: Eq a => [a] -> [a] -> [a]
+appendSinReps (x:xs) ys = if (pertenece x ys)
+                                then (appendSinReps xs ys) 
+                                else x : (appendSinReps xs ys) 
+                                
+pertenece :: Eq a => a -> [a] -> Bool
+pertenece k [] = False
+pertenece k (n:ns) = (n==k) || (pertenece k ns)
+                            
+
+--6)
+{--type Presa = String -- nombre de presa
+type Territorio = String -- nombre de territorio
+type Nombre = String -- nombre de lobo
+data Lobo = Cazador Nombre [Presa] Lobo Lobo Lobo | Explorador Nombre [Territorio] Lobo Lobo | Cria Nombre
+data Manada = M Lobo--}
+
+superioresDelCazador :: Nombre -> Manada -> [Nombre]
+superioresDelCazador n (M lobo) = losLobosQueTienenDeSubordinadoA n lobo
+
+losLobosQueTienenDeSubordinadoA :: Nombre -> Lobo -> [Nombre]
+losLobosQueTienenDeSubordinadoA n (Cria _) = []
+losLobosQueTienenDeSubordinadoA n (Explorador n_ _ lobo1 lobo2)         = []
+losLobosQueTienenDeSubordinadoA n  (Cazador n2 _ lobo1 lobo2 lobo3)     = singularSi n (esCazadorConNombre n lobo1 ||
+                                                                                        esCazadorConNombre n lobo2 ||
+                                                                                        esCazadorConNombre n lobo3) ++  (losLobosQueTienenDeSubordinadoA n lobo1) ++
+                                                                                                                    (losLobosQueTienenDeSubordinadoA n lobo2) ++
+                                                                                                                    (losLobosQueTienenDeSubordinadoA n lobo3)
+
+singularSi :: a -> Bool -> [a]
+singularSi a True = [a]
+singularSi a False = []
+
+esCazadorConNombre :: Nombre -> Lobo -> Bool
+esCazadorConNombre n (Cria _) = False
+esCazadorConNombre n (Explorador _ _ _ _)    = False
+esCazadorConNombre n (Cazador n2 _ _ _ _) = n == n2
