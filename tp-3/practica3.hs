@@ -13,7 +13,7 @@ unoSi False = 0
 
 sonMismoColor :: Color -> Color -> Bool
 sonMismoColor Azul Azul = True
-sonMismoColor Rojo Rojo = False
+sonMismoColor Rojo Rojo = True
 
 --b)
 poner :: Color -> Celda -> Celda
@@ -23,7 +23,7 @@ poner col celda = (Bolita col celda)
 sacar :: Color -> Celda -> Celda
 sacar _ CeldaVacia = CeldaVacia
 sacar col (Bolita col2 celda) =  if (sonMismoColor col col2)
-                                    then sacar col celda
+                                    then celda
                                     else Bolita col2 (sacar col celda)
 
 
@@ -35,25 +35,25 @@ sacarBolitaSiEsDeColor col (Bolita col2 celda) = if (sonMismoColor col col2)
 --d)
 ponerN :: Int -> Color -> Celda -> Celda
 ponerN 0 _ celda = celda
-ponerN n col celda = (Bolita col (ponerN (n-1) col celda)) 
+ponerN n col celda = (poner col (ponerN (n-1) col celda)) 
 
 --2)
 data Objeto = Cacharro | Tesoro
+        deriving Show
 data Camino = Fin | Cofre [Objeto] Camino | Nada Camino
+        deriving Show
+
+cam = Cofre [Cacharro, Tesoro] (Nada (Cofre [Tesoro, Tesoro] (Cofre [Cacharro, Tesoro] (Nada (Cofre [Tesoro, Tesoro] (Fin))))))
 
 --a)
 hayTesoro :: Camino -> Bool
 hayTesoro Fin = False
-hayTesoro (Cofre obj camino) = if(tieneTesoro obj)
-                                then True
-                                else hayTesoro camino 
+hayTesoro (Cofre obj camino) = tieneTesoro obj || hayTesoro camino 
 hayTesoro (Nada camino) = hayTesoro camino
 
 tieneTesoro :: [Objeto] -> Bool
 tieneTesoro [] = False
-tieneTesoro (n:ns) = if(esTesoro n)
-                        then True
-                        else tieneTesoro ns
+tieneTesoro (n:ns) = esTesoro n || tieneTesoro ns
 
 esTesoro :: Objeto -> Bool
 esTesoro Tesoro = True
@@ -69,10 +69,10 @@ pasosHastaTesoro (Nada camino) = 1 + pasosHastaTesoro camino
 
 --c)
 hayTesoroEn :: Int -> Camino -> Bool
-hayTesoroEn n camino = hayTesoroEn (n-1) (caminoSinElPrimero camino)
 hayTesoroEn 0 Fin = False 
 hayTesoroEn 0 (Cofre objs camino) = tieneTesoro objs
 hayTesoroEn 0 (Nada camino) = False
+hayTesoroEn n camino = hayTesoroEn (n-1) (caminoSinElPrimero camino)
 
 caminoSinElPrimero :: Camino -> Camino
 caminoSinElPrimero Fin = Fin
@@ -83,10 +83,13 @@ caminoSinElPrimero (Nada camino) = camino
 alMenosNTesoros :: Int -> Camino -> Bool
 alMenosNTesoros 0 _ = True
 alMenosNTesoros _ Fin = False
-alMenosNTesoros n (Cofre objs camino) = if(n > cuantosSonTesoro objs)
-                                            then alMenosNTesoros (n - (cuantosSonTesoro objs)) camino
-                                            else True
+alMenosNTesoros n (Cofre objs camino) = alMenosNTesoros (restaEspecial n (cuantosSonTesoro objs)) camino
 alMenosNTesoros n (Nada camino)    = alMenosNTesoros n camino 
+
+restaEspecial :: Int -> Int -> Int
+restaEspecial n n2 = if(n < n2)
+                        then 0
+                        else n - n2
 
 --e)
 --PRECOND: el primer numero debe ser menor o igual al segundo
@@ -98,8 +101,8 @@ cantTesorosHasta :: Int -> Camino -> Int
 cantTesorosHasta _ Fin = 0
 cantTesorosHasta 0 (Cofre objs camino) = cuantosSonTesoro objs
 cantTesorosHasta 0 (Nada camino)       = 0
-cantTesorosHasta n (Cofre objs camino) = cuantosSonTesoro objs + cantTesorosHasta (n-1) (caminoSinElPrimero camino)
-cantTesorosHasta n (Nada camino)       = cantTesorosHasta (n-1) (caminoSinElPrimero camino)
+cantTesorosHasta n (Cofre objs camino) = cuantosSonTesoro objs + cantTesorosHasta (n-1) (camino)
+cantTesorosHasta n (Nada camino)       = cantTesorosHasta (n-1) (camino)
 
 cuantosSonTesoro :: [Objeto] -> Int
 cuantosSonTesoro [] = 0
@@ -130,25 +133,19 @@ mapDobleT (NodeT n tree1 tree2) = (NodeT (2*n) (mapDobleT tree1) (mapDobleT tree
 --4)
 perteneceT :: Eq a => a -> Tree a -> Bool
 perteneceT a EmptyT = False
-perteneceT a (NodeT b tree1 tree2) = if (a == b)
-                                        then True
-                                        else (perteneceT a tree1) || (perteneceT a tree2)
+perteneceT a (NodeT b tree1 tree2) = (a == b) || (perteneceT a tree1) || (perteneceT a tree2)
 
 --5)
 aparicionesT :: Eq a => a -> Tree a -> Int
 aparicionesT a EmptyT = 0
 aparicionesT a (NodeT b tree1 tree2) = unoSi(a == b) + (aparicionesT a tree1) + (aparicionesT a tree2)
 
-{--6)
+--6)
 leaves :: Tree a -> [a]
 leaves EmptyT = []
-leaves (NodeT a tree1 tree2) = if(esHoja a)
+leaves (NodeT a tree1 tree2) = if((isEmpty tree1) && (isEmpty tree2))
                                 then [a]
                                 else  ((leaves tree1) ++ (leaves tree2))--}
-
-esHoja :: Tree a -> Bool
-esHoja EmptyT = True
-esHoja (NodeT a tree1 tree2) = (isEmpty tree1) && (isEmpty tree2)
 
 isEmpty :: Tree a -> Bool
 isEmpty  EmptyT = True
@@ -157,7 +154,7 @@ isEmpty (NodeT _ _ _) = False
 --7)
 heightT :: Tree a -> Int
 heightT EmptyT = 0
-heightT (NodeT a tree1 tree2) = 1 + (heightT tree1) + (heightT tree2)
+heightT (NodeT a tree1 tree2) = 1 + (max (heightT tree1) (heightT tree2))
 
 --8)
 mirrorT :: Tree a -> Tree a
@@ -178,7 +175,12 @@ levelN n  (NodeT a tree1 tree2) = (levelN (n-1) tree1) ++ (levelN (n-1) tree2)
 --11)
 listPerLevel :: Tree a -> [[a]]
 listPerLevel EmptyT = []
-listPerLevel (NodeT a tree1 tree2) = [a] : ((listPerLevel tree1) ++ (listPerLevel tree2))
+listPerLevel (NodeT a tree1 tree2) = [a] : (juntarListasDeListas (listPerLevel tree1) (listPerLevel tree2))
+
+juntarListasDeListas :: [[a]] -> [[a]] -> [[a]]
+juntarListasDeListas [] lss = lss
+juntarListasDeListas lss [] = lss
+juntarListasDeListas (xs:xss) (ys:yss) = (xs ++ ys) : juntarListasDeListas xss yss 
 
 --12)
 ramaMasLarga :: Tree a -> [a]
@@ -195,15 +197,16 @@ laMasLargaDe tree1 tree2 = if ((heightT tree1) > (heightT tree2))
 --13)
 todosLosCaminos :: Tree a -> [[a]]
 todosLosCaminos EmptyT = []
-todosLosCaminos (NodeT a tree1 tree2) = [a] : (agregarACadaLista a ((todosLosCaminos tree1)++(todosLosCaminos tree2)))
+todosLosCaminos (NodeT a tree1 tree2) = [a] : ((agregarACadaLista a ((todosLosCaminos tree1))++ (agregarACadaLista a(todosLosCaminos tree2))))
 
 agregarACadaLista :: a -> [[a]] -> [[a]]
-agregarACadaLista x [] = [[x]]
+agregarACadaLista x [] = []
 agregarACadaLista x (ls:lss) = (x : ls) : (agregarACadaLista x lss)
 
 
 --PUNTO 2.2
 data ExpA = Valor Int | Sum ExpA ExpA | Prod ExpA ExpA | Neg ExpA
+                deriving Show
 --1)
 eval :: ExpA -> Int
 eval (Valor n) = n
@@ -214,18 +217,26 @@ eval (Neg exp) = (-1) * (eval exp)
 --2)
 simplificar :: ExpA -> ExpA
 simplificar (Valor n) = (Valor n)
-simplificar (Sum exp1 exp2) = simplSuma exp1 exp2
-simplificar (Prod exp1 exp2) = simplProd exp1 exp2
-simplificar (Neg (Neg exp)) = exp
+simplificar (Sum exp1 exp2) = simplSuma (simplificar exp1) (simplificar exp2)
+simplificar (Prod exp1 exp2) = simplProd (simplificar exp1) (simplificar exp2)
+simplificar (Neg exp) = (simplNeg (simplificar exp))
 
 simplSuma :: ExpA -> ExpA -> ExpA
 simplSuma (Valor 0) exp2 = exp2
 simplSuma exp1 (Valor 0) = exp1
-simplSuma exp1 exp2 = (Valor ((eval exp1) + (eval exp2)))
+simplSuma exp1 exp2 = Sum (exp1) (exp2)
 
 simplProd :: ExpA -> ExpA -> ExpA
 simplProd (Valor 0) exp2 = (Valor 0)
 simplProd exp1 (Valor 0) = (Valor 0)
 simplProd (Valor 1) exp2 = exp2
 simplProd exp1 (Valor 1) = exp1
-simplProd exp1 exp2 = (Valor ((eval exp1) * (eval exp2)))
+simplProd exp1 exp2 = Prod (exp1) (exp2)
+
+simplNeg :: ExpA -> ExpA
+simplNeg (Neg exp) = exp
+simplNeg exp = (Neg exp)
+
+esNeg :: ExpA -> Bool
+esNeg (Neg _) = True
+esNeg _ = False
