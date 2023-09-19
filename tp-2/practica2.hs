@@ -336,3 +336,13 @@ sumarProyecto r [] = [(proyectoDeRol r, 1)]
 sumarProyecto r ((p,n) : ps) = if (tieneProyecto p r)
                                 then (p,n+1) : sumarProyecto r ps
                                 else (p,n) : sumarProyecto r ps
+
+tieneProyecto :: Proyecto -> Rol -> Bool
+tieneProyecto p r = (nombreProyecto p) == (nombreProyecto (proyectoDeRol r))
+
+proyectoDeRol :: Rol -> Proyecto
+proyectoDeRol (Developer s p) = p
+proyectoDeRol (Management s p) = p
+
+nombreProyecto :: Proyecto -> String
+nombreProyecto (ConsProyecto s) = s
