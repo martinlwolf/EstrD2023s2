@@ -2,7 +2,7 @@
 data Pizza = Prepizza | Capa Ingrediente Pizza
 data Ingrediente = Salsa | Queso | Jamon | Aceitunas Int
 
---1)
+{--1)
 cantidadDeCapas :: Pizza -> Int
 cantidadDeCapas Prepizza = 0
 cantidadDeCapas (Capa _ pizza) = 1 + (cantidadDeCapas pizza)
@@ -407,21 +407,21 @@ appendSinReps (x:xs) ys = if (pertenece x ys)
 pertenece :: Eq a => a -> [a] -> Bool
 pertenece k [] = False
 pertenece k (n:ns) = (n==k) || (pertenece k ns)
-                            
+--}                            
 
 --6)
-{--type Presa = String -- nombre de presa
+type Presa = String -- nombre de presa
 type Territorio = String -- nombre de territorio
 type Nombre = String -- nombre de lobo
 data Lobo = Cazador Nombre [Presa] Lobo Lobo Lobo | Explorador Nombre [Territorio] Lobo Lobo | Cria Nombre
-data Manada = M Lobo--}
+data Manada = M Lobo
 
 superioresDelCazador :: Nombre -> Manada -> [Nombre]
 superioresDelCazador n (M lobo) = losLobosQueTienenDeSubordinadoA n lobo
 
 losLobosQueTienenDeSubordinadoA :: Nombre -> Lobo -> [Nombre]
 losLobosQueTienenDeSubordinadoA n (Cria _) = []
-losLobosQueTienenDeSubordinadoA n (Explorador n_ _ lobo1 lobo2)         = []
+losLobosQueTienenDeSubordinadoA n (Explorador n_ _ lobo1 lobo2)         = (losLobosQueTienenDeSubordinadoA n lobo1) ++ (losLobosQueTienenDeSubordinadoA n lobo2)
 losLobosQueTienenDeSubordinadoA n  (Cazador n2 _ lobo1 lobo2 lobo3)     = singularSi n (esCazadorConNombre n lobo1 ||
                                                                                         esCazadorConNombre n lobo2 ||
                                                                                         esCazadorConNombre n lobo3) ++  (losLobosQueTienenDeSubordinadoA n lobo1) ++
@@ -435,6 +435,5 @@ singularSi a False = []
 esCazadorConNombre :: Nombre -> Lobo -> Bool
 esCazadorConNombre n (Cria _) = False
 esCazadorConNombre n (Explorador _ _ _ _)    = False
-esCazadorConNombre n (Cazador n2 _ _ _ _) = n == n2
 esCazadorConNombre n (Cazador n2 _ _ _ _) = n == n2
                             

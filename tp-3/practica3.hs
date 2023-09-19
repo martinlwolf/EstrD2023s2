@@ -14,6 +14,7 @@ unoSi False = 0
 sonMismoColor :: Color -> Color -> Bool
 sonMismoColor Azul Azul = True
 sonMismoColor Rojo Rojo = True
+sonMismoColor _ _ = False
 
 --b)
 poner :: Color -> Celda -> Celda
@@ -72,7 +73,8 @@ hayTesoroEn :: Int -> Camino -> Bool
 hayTesoroEn 0 Fin = False 
 hayTesoroEn 0 (Cofre objs camino) = tieneTesoro objs
 hayTesoroEn 0 (Nada camino) = False
-hayTesoroEn n camino = hayTesoroEn (n-1) (caminoSinElPrimero camino)
+hayTesoroEn n (Cofre objs camino) = hayTesoroEn (n-1) camino
+hayTesoroEn n (Nada camino) = hayTesoroEn (n-1) camino
 
 caminoSinElPrimero :: Camino -> Camino
 caminoSinElPrimero Fin = Fin
@@ -95,20 +97,26 @@ restaEspecial n n2 = if(n < n2)
 --PRECOND: el primer numero debe ser menor o igual al segundo
 cantTesorosEntre :: Int -> Int -> Camino -> Int
 cantTesorosEntre 0 n camino = cantTesorosHasta n camino
-cantTesorosEntre n1 n2 camino = cantTesorosEntre ((n1)-1) ((n2)-1) (caminoSinElPrimero camino)
+cantTesorosEntre n1 n2 Fin = 0 
+cantTesorosEntre n1 n2 (Cofre _ camino) = cantTesorosEntre ((n1)-1) ((n2)-1) camino
+cantTesorosEntre n1 n2 (Nada camino) = cantTesorosEntre ((n1)-1) ((n2)-1) camino
 
 cantTesorosHasta :: Int -> Camino -> Int
-cantTesorosHasta _ Fin = 0
-cantTesorosHasta 0 (Cofre objs camino) = cuantosSonTesoro objs
-cantTesorosHasta 0 (Nada camino)       = 0
+cantTesorosHasta 0 camino = cantidadDeTesorosDelCamino camino
+cantTesorosHasta n Fin = 0
 cantTesorosHasta n (Cofre objs camino) = cuantosSonTesoro objs + cantTesorosHasta (n-1) (camino)
 cantTesorosHasta n (Nada camino)       = cantTesorosHasta (n-1) (camino)
 
 cuantosSonTesoro :: [Objeto] -> Int
-cuantosSonTesoro [] = 0
+cuantosSonTesoro [] = 0 
 cuantosSonTesoro (o:os) = if(esTesoro o)
                                 then 1 + cuantosSonTesoro os
                                 else cuantosSonTesoro os
+
+cantidadDeTesorosDelCamino :: Camino -> Int
+cantidadDeTesorosDelCamino Fin = 0
+cantidadDeTesorosDelCamino (Cofre objs camino) = cuantosSonTesoro objs
+cantidadDeTesorosDelCamino (Nada camino) = 0
 
 --PUNTO 2
 data Tree a = EmptyT | NodeT a (Tree a) (Tree a)
