@@ -107,7 +107,7 @@ pertenece :: Eq a => a -> [a] -> Bool
 pertenece k [] = False
 pertenece k (n:ns) = (n==k) || (pertenece k ns)
 
---QUEUE
+{--QUEUE
 lengthQ :: Queue a -> Int
 lengthQ queue = length (elementosDeLaQueue queue)
 
@@ -125,3 +125,17 @@ unionQ :: Queue a -> Queue a -> Queue a
 unionQ queue1 queue2 = if(isEmptyQ queue2)
                         then queue1
                         else unionQ (enQueue (firstQ queue2) queue1) (deQueue queue2)
+
+--STACK
+apilar :: [a] -> Stack a
+apilar [] = emptyS
+apilar (x:xs) = push x (apilar xs)
+
+desapilar :: Stack a -> [a]
+desapilar stack = if(isEmptyS)
+                    then []
+                    else top stack : (desapilar stack)
+
+insertarEnPos :: Int -> a -> Stack a -> Stack a
+insertarEnPos 0 k stack = push k stack
+insertarEnPos n k stack = insertarEnPos (n-1) (pop stack)--}
