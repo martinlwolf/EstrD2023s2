@@ -79,7 +79,7 @@ sacar n (x:xs) = if n == x
 ordenar :: Ord a => [a] -> [a]
 ordenar [] = []
 ordenar xs =    let m = minimo xs in m : ordenar (sacar m xs)
---LINEAL
+--CUADRATICA
 
 --PUNTO 2
 
