@@ -138,4 +138,4 @@ desapilar stack = if(isEmptyS)
 
 insertarEnPos :: Int -> a -> Stack a -> Stack a
 insertarEnPos 0 k stack = push k stack
-insertarEnPos n k stack = insertarEnPos (n-1) (pop stack)--}
+insertarEnPos n k stack = push (top st) (insertarEnPos (n-1) k (pop stack))--}
