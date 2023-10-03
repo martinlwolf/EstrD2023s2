@@ -3,16 +3,18 @@ import PriorityQueueV2
 --EJERCICIO 2 PQ
 --1)
 heapSort :: Ord a => [a] -> [a]
-heapSort xs = pQToList (insertarTodosEn emptyPQ)
+heapSort xs = pQToList (insertarTodosEn xs emptyPQ)
 
 --O(n^2)
 insertarTodosEn :: [a] -> PriorityQueue a -> PriorityQueue a
 insertarTodosEn [] pq = pq
 insertarTodosEn (x:xs) pq= insertPQ x pq : (insertarTodosEn xs pq)
 
---O(n)
+--O(n^2)
 pQToList :: PriorityQueue a -> [a]
-pQToList pq = findMinPQ pq : pQToList (deleteMinPQ)
+pQToList pq = if(isEmptyPQ pq)
+                then []
+                else findMinPQ pq : pQToList (deleteMinPQ)
 
 --EJERCICIO 3 MAP
 --O(n^2)
@@ -47,5 +49,31 @@ valoresYSusKeysDe (k:ks) map = (k, (lookupM k map)) : (valoresYSusKeysDe ks (del
 
 --O(n^2)
 agruparEq :: Eq k => [(k, v)] -> Map k [v]
-agruparEq
+agruparEq [] = emptyM
+agruparEq ((k,v) : xs) = case lookupM k (agruparEq xs) of
+                          Just ys -> assocM k (v:ys) (agruparEq xs)
+                          Nothing -> assocM k [v] (agruparEq xs)
+
+multisetToList :: Multiset a -> [(a,Int)]
+multisetToList (MS map) = mapToList map
+
+emptyM :: Multiset a
+emptyM = MS emptyM
+
+addMS :: Ord a => a -> Multiset a -> Multiset a
+addMS x (MS map) = case lookupM x mp of
+                    Just n -> MS (assocM x (n+1) map)
+                    Nothing -> MS (assocM x 1 map)
+
+ocurrences :: Ord a => a -> Multiset a -> Int
+ocurrences x (MS map) = case lookupM x mp of
+                    Just n -> n
+                    Nothing -> 0
+
+ocurrencias :: Ord a => [a] -> [(a,Int)]
+ocurrencias cs = multisetToList(listToMS cs)
+
+listToMS :: Ord a => [a] -> Multiset a
+listToMS [] = emptyMS
+listToMS (x:xs) = addMS x (listToMS xs)
 
