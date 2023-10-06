@@ -1,5 +1,5 @@
 module Map
-    (Map, emptyM, assocM, lookupM, deleteM, domM) 
+    (Map, emptyM, assocM, lookupM, deleteM, keys) 
   where
 
 data Map k v = M [(k,v)]
