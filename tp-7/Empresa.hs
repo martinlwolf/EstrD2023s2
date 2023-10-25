@@ -39,8 +39,64 @@ todosLosSectores (ConsE map1 map2) = keys map1
 agregarSector :: SectorId -> Empresa -> Empresa
 agregarSector s (ConsE map1 map2) = (ConsE (assocM s (emptyS) map1) map2) 
 
-{-agregarEmpleado :: [SectorId] -> CUIL -> Empresa -> Empresa
-agregarEmpleado sectores cuil (ConsE map1 map2) = (ConsE map1 map2)-}
+agregarEmpleado :: [SectorId] -> CUIL -> Empresa -> Empresa
+agregarEmpleado sectores cuil (ConsE map1 map2) = let e = incorporarSectoresA sectores (consEmpleado cuil)
+                                                   in (ConsE (agregarEmpleadoASectoresDe e sectores map1) (assocM cuil e map2))
+--O(log s * (log S + log e) + s log s)
+
+incorporarSectoresA :: [SectorId] -> Empleado -> Empleado
+incorporarSectoresA [] emp = emp
+incorporarSectoresA (s : ss) emp =  incorporarSectoresA ss (incorporarSector s emp)
+--O(s log s)
+
+agregarEmpleadoASectoresDe :: Empleado -> [SectorId] -> (Map SectorId (Set Empleado)) -> (Map SectorId (Set Empleado))
+agregarEmpleadoASectoresDe emp [] map = map
+agregarEmpleadoASectoresDe emp (s:ss) map = agregarEmpleadoASectoresDe emp ss (agregarEmpleadoEnSector emp s map)
+--O(log s * (log S + log e))
+
+agregarEmpleadoEnSector :: Empleado -> SectorId -> (Map SectorId (Set Empleado)) -> (Map SectorId (Set Empleado))
+agregarEmpleadoEnSector emp sec map = case lookupM sec map of
+                                    Just emps -> assocM sec (addS emp emps) (deleteM sec map)
+                                    Nothing -> map
+--O(log S + log e)
 
 agregarASector :: SectorId -> CUIL -> Empresa -> Empresa
-agregarASector id cuil (ConsE map1 map2) = (ConsE map1 (agregarSectorAEmpleadoConCuil map2))
+agregarASector 
+
+--EJERCICIO 5
+comenzarCon :: [SectorId] -> [CUIL] -> Empresa
+comenzarCon secs cuils = agregarEmpleadosA cuils secs (agregarSectoresEn secs (consEmpresa))
+
+agregarSectoresEn :: [SectorId] -> Empresa -> Empresa
+agregarSectoresEn [] emp = emp
+agregarSectoresEn (s:ss) emp = agregarSector s (agregarSectoresEn ss emp)
+--O(s log s)
+
+agregarEmpleadosA :: [CUIL] -> [SectorId] -> Empresa -> Empresa
+agregarEmpleadosA [] emp secs = emp
+agregarEmpleadosA (c:cs) emp = agregarEmpleado secs c (agregarEmpleadosA cs secs emp)
+
+recorteDePersonal :: Empresa -> Empresa
+recorteDePersonal emp = borrarEmpladosEn (losPrimeros (div (cantidadTotalDeEmpleados emp) 2) (todosLosCuil emp))  emp
+
+cantidadTotalDeEmpleados :: Empresa -> Int
+cantidadTotalDeEmpleados emp = size (todosLosCuil emp)
+
+losPrimeros :: Int -> [a] -> [a]
+losPrimeros 0 _ = []
+losPrimeros _ [] = []
+losPrimeros k (n:ns) = n : losPrimeros (k-1) ns
+
+borrarEmpladosEn :: [CUIL] -> Empresa -> Empresa
+borrarEmpladosEn [] emp = emp
+borrarEmpladosEn (c:cs) emp = borrarEmpleado c (borrarEmpladosEn cs emp)
+
+convertirEnComodin :: CUIL -> Empresa -> Empresa
+convertirEnComodin cuil empr = agregarASectores (todosLosSectores) cuil empr
+
+agregarASectores :: [SectorId] -> CUIL -> Empresa -> Empresa
+agregarASectores [] _ empr = empr
+agregarASectores (s : ss) c empr = agregarASector s c (agregarASectores ss c empr)
+
+esComodin :: CUIL -> Empresa -> Bool
+esComodin c empr = (size(sectores (buscarPorCUIL c empr))) = (size(todosLosSectores empr))
