@@ -1,14 +1,4 @@
 data Organizador = MkO (Map Checksum (Set Persona)) (Map Persona (Set Checksum))
-
-agregarPrograma :: Organizador -> Checksum -> Set Persona -> Organizador
-agregarPrograma (MkO map1 map2) checkn ps = let a = ... checkn (set2List ps) map2
-                                              in MkO (assocM checkn ps map1) a
-                                              
-agregarPersonasConChecksumAMap :: [Persona] -> Checksum -> Map Persona (Set Checksum)
-agregarPersonasConChecksumAMap [] _ map = map
-agregarPersonasConChecksumAMap (p:ps) n map = case lookupM n map of
-                                            Just 
-                                            
 agregarPrograma :: Organizador -> Checksum -> Set Persona -> Organizador
 agregarPrograma (MkO cxp pxc) c ps = case lookupM c cxp of
                                             Just _ -> error "el checksum esta registrado"
