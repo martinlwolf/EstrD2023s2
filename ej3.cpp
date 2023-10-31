@@ -77,3 +77,10 @@ int sumatoria(ArrayList xs){
     }
     return acum;
 }
+
+void sucesores(ArrayList xs){
+    for(int = 0; i<lenghtAL(xs);i++){
+        set(i, get(i,xs)+1,xs);
+    }
+}
+
