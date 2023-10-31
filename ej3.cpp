@@ -69,3 +69,11 @@ void remove(ArrayList xs){
     }
     xs -> cantidad--;
 }
+
+int sumatoria(ArrayList xs){
+    int acum = 0;
+    for(int i = 0; i<lenghtAL(xs); i++){
+        acum += get(i,xs);
+    }
+    return acum;
+}
