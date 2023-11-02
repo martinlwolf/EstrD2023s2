@@ -1,9 +1,9 @@
+#include <Par.h>
 #include <iostream>
-#include "par.h"
 using namespace std;
 
 int main(){
-    printFromTo(char 'a', char 'b');
+    cout << fst(consPar(1,2)) << endl;
 }
 
 /*EJERCICIO 3*/
@@ -23,20 +23,20 @@ int snd(Par p){
 
 int maxDelPar(Par p){
     if(p.x > p.y){
-        return p.x
+        return p.x;
     }
-    else return p.y
+    else return p.y;
 }
 
 Par swap(Par p){
-    int temp = p.x
+    int temp = p.x;
     p.x = p.y;
     p.y = temp;
     return p;
 }
 
 Par divisionYResto(int n, int m){
-    consPar((div(n,m).quot), (div(n,m).rem))
+    consPar((div(n,m).quot), (div(n,m).rem));
 }
 
 //EJERCICIO 4
@@ -58,22 +58,22 @@ void printNR(int n, string s){
 
 void cuentaRegresiva(int n){
     while(n >= 0){
-        cout << n << \n;
+        cout << n << "\n";
         n--;
     }
 }
 
 void cuentaRegresivaR(int n){
     if(n >= 0){
-        cout << n << \n;
-        cuentaRegresivaR(n-1)
+        cout << n << "\n";
+        cuentaRegresivaR(n-1);
     }
 }
 
 void desdeCeroHastaN(int n){
     int count = 0;
     while(count < n){
-        cout << count << \n;
+        cout << count << "\n";
         count++;
     }
 }
@@ -83,7 +83,7 @@ void desdeCeroHastaNR(int n){
         desdeCeroHastaN(n-1);
         cout << n << endl;
     }
-    else 0
+    else 0;
 }
 
 int mult(int n, int m){
@@ -95,14 +95,14 @@ int mult(int n, int m){
 
 int multR(int n, int m){
     if(n > 1){
-        m + multR((n-1), m)
+        m + multR((n-1), m);
     }
     else 0;
 }
 
 void primerosN(int n, string s){
     for(int i = 0; i<n ; i++){
-        cout << s[i] << endl
+        cout << s[i] << endl;
     }
 }
 
@@ -116,39 +116,39 @@ void primerosNR(int n, string s){
 bool pertenece (char c, string s){
     string copia = s;
     while((s[0]!= c) && s.length() > 1){
-        copia = copia.substr(1,copia.length())
+        copia = copia.substr(1,copia.length());
     }
     return copia[0] == c;
 }
 
 bool perteneceR (char c, string s){
-    if (s.lenght() == 0){
-        return false
+    if (s.length() == 0){
+        return false;
     }
     else{
-        s[0] == c || pertenece(c, s.substr(1,s.length()))
+        s[0] == c || pertenece(c, s.substr(1,s.length()));
     }
 }
 
 int apariciones(char c, string s){
-    int aps = 0
+    int aps = 0;
     string copiaS = s;
-    while(copia.length() > 0){
+    while(copiaS.length() > 0){
         if(c == s[0]){
             aps++;
         }
-    copia = copia.substr(1,copia.length())
+    copiaS = copiaS.substr(1,copiaS.length());
     }
 }
 
 int aparicionesR(char c, string s){
-    if(s.lenght() > 0){
+    if(s.length() > 0){
         if(c == s[0]){
-            1 + aparicionesR(c, s.substr(1,s.length()))
+            1 + aparicionesR(c, s.substr(1,s.length()));
         }
-        else aparicionesR(c, s.substr(1,s.length()))
+        else aparicionesR(c, s.substr(1,s.length()));
     }
-    else 0
+    else 0;
 }
 
 //EJERCICIO 5

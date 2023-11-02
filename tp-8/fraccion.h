@@ -1,7 +1,12 @@
-struct Fraccion {
+#include <iostream>
+using namespace std;
+
+struct RegFrac {
 int numerador;
 int denominador;
 };
+
+typedef struct RegFrac Fraccion;
 
 // Propósito: construye una fraccion
 // Precondición: el denominador no es cero
