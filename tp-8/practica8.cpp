@@ -1,5 +1,6 @@
 #include <Par.h>
 #include <iostream>
+#include <Fraccion.h>
 using namespace std;
 
 int main(){
