@@ -1,6 +1,8 @@
 #include <iostream>
-using namespace std;
+#include "Tree.cpp"
 #include "LinkedList.cpp"
+using namespace std;
+
 
 int sumatoria(LinkedList xs){
     int sumatoria = 0;
@@ -78,7 +80,101 @@ void Append(LinkedList xs, LinkedList ys){
     delete ys;
 }
 
+//EJERCICIO 7
+int sumarT(Tree t){
+    if(!isEmptyT(t)){
+        return (t->elem + sumarT(t->left) + sumarT(t->right));
+    }
+    else{
+        return 0;
+    }
+}
+
+int sizeT(Tree t){
+    if(!isEmptyT(t)){
+        return(1 + sizeT(t->left) + sizeT(t->right));
+    }
+    else{
+        return 0;
+    }
+}
+
+bool perteneceT(int e, Tree t){
+     if(!isEmptyT(t)){
+        return((t->elem == e) || perteneceT(e, t->left) || perteneceT(e, t->right));
+     }
+     else{
+        false;
+     }
+}
+
+int aparicionesT(int e, Tree t){
+    if(!isEmptyT(t)){
+        return unoSi(t->elem == e) + aparicionesT(e, t->left) + aparicionesT(e, t->right);
+    }
+    else{
+        return 0;
+    }
+}
+
+int heightT(Tree t){
+    if(!isEmptyT(t)){
+        return(1 + max(heightT(t->left), heightT(t->left)));
+    }
+}
+
+LinkedList toList(Tree t){
+    LinkedListSt* lista = emptyList();
+    Cons(t->elem, lista);
+    Append(toList(t->left), lista);
+    Append(toList(t->right), lista);
+    return lista;
+}
+
+LinkedList leaves(Tree t){
+    LinkedListSt* lista = emptyList();
+    if(!isEmptyT(t)){
+    if(isEmptyT(t->left) && isEmptyT(t->right)){
+        Cons(t->elem, lista);
+    }
+    else{
+        Append(lista, leaves(t->left));
+        Append(lista, leaves(t->left));
+    }
+    }
+    else{
+        return emptyList();
+    }
+}
+
+LinkedList levelN(int n, Tree t){
+    if(!isEmptyT(t)){
+        if(n != 0){
+            LinkedList list = levelN(n-1, t->left);
+            Append(list, levelN(n-1, t->right));
+            return list;
+        }
+        else{
+            LinkedList list = emptyList();
+            Cons(t->elem, list);
+            return (list);
+        }
+    }
+    else{
+        return emptyList();
+    }
+}
+
 
 int main(){
     cout << "a" << endl;
+}
+
+int unoSi(bool cond){
+    if(cond){
+        return 1;
+    }
+    else{
+        return 0;
+    }
 }
