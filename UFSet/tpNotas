@@ -6,10 +6,16 @@ El procedimiento UNION une 2 conjuntos eligiendo el elemento distinguido de entr
 El ufset se representa con un arbol ordenado, en la raiz esta el elemento distinguido. Cuando se une con otro elemento, la raiz de uno de los conjuntos pasa a ser la raiz
 del nuevo conjunto (elemento distinguido)
 
-Para hacer la union la raiz debe ser del arbol de mayor rango(1ra opt). El rango se determina por la longitud de la rama mas larga
+Para hacer la union la raiz debe ser del arbol de mayor rango(1ra opt). El rango se determina por la longitud de la rama mas larga.
+Agregar valor rango en UFSet. En un conjunto unitario, el rango arranca de 0. Codear que si los distinguidos son iguales, no se une
+para que no se modifique el rango.
 
-Una vez que se hace un find, ya se sabe cual va a ser el resultado del find (2da opt)
+Una vez que se hace un find, ya se sabe cual va a ser el resultado del find (2da opt). Se evita recorrer todo el ufset hasta llegar
+al distinguido y setearlo como padre. Luego hay que comprimir el ufset seteando como padre el distinguido a todos los del ufset.
+Primero hay que recorrer una vez hasta el distinguido y setearlo en el primero pedido, luego hay que recorrer otra vez para comprimir todo.
+Al final de esta optimizacion los elementos no van a tener relacion entre si, solo con el padre (distinguido).
 
 La raiz no conoce a sus hijos, por eso tampoco conoce el rango(implementar). Si se agrega 1 elemento como hijo, le tiene que avisar a su padre que se aumenta el rango
 en caso de ser necesario (tambien se puede hacer de que se recorra para abajo desde la raiz para conocer el rango.
 
+Cambiar el null por referencia a si mismo en el padre.
