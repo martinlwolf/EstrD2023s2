@@ -2,13 +2,13 @@
 #include <vector>
 #include "Equipo.h"
 #include "Test.h"
-//#include "UFSet.cpp"
+#include "UFSet.cpp"
 
 using namespace std;
 
 int main()
 {
-    cout << "Inicializando equipos..." << endl;
+    /*cout << "Inicializando equipos..." << endl;
 
     Equipo estadosUnidos = crearEquipo(ESTADOSUNIDOS, "A");
     Equipo costaRica     = crearEquipo(COSTARICA,     "A");
@@ -73,9 +73,9 @@ int main()
     caso3.push_back(bolivia);
     caso3.push_back(chile);
     caso3.push_back(panama);
-    test("Caso 3", caso3);
+    test("Caso 3", caso3);*/
 
-    /*Equipo peru          = crearEquipo(PERU,          "B");
+    Equipo peru          = crearEquipo(PERU,          "B");
     Equipo brasil        = crearEquipo(BRASIL,        "B");
     Equipo ecuador       = crearEquipo(ECUADOR,       "B");
     UFSet p = createUFS(peru);
@@ -87,13 +87,22 @@ int main()
     cout << nombreEquipo(elemUFS(findUFS(p))) << endl;
     cout << nombreEquipo(elemUFS(findUFS(b))) << endl;
     cout << nombreEquipo(elemUFS(findUFS(e))) << endl;
+    cout << p->rango << endl;
+    cout << b->rango << endl;
+    cout << e->rango << endl;
     unionUFS(p,b);
     cout << nombreEquipo(elemUFS(findUFS(p))) << endl;
     cout << nombreEquipo(elemUFS(findUFS(b))) << endl;
     cout << nombreEquipo(elemUFS(findUFS(e))) << endl;
-    unionUFS(e, b);
+    cout << p->rango << endl;
+    cout << b->rango << endl;
+    cout << e->rango << endl;
+    unionUFS(e, e);
     cout << nombreEquipo(elemUFS(findUFS(p))) << endl;
     cout << nombreEquipo(elemUFS(findUFS(b))) << endl;
-    cout << nombreEquipo(elemUFS(findUFS(e))) << endl;*/
+    cout << nombreEquipo(elemUFS(findUFS(e))) << endl;
+    cout << p->rango << endl;
+    cout << b->rango << endl;
+    cout << e->rango << endl;
     return 0;
 }

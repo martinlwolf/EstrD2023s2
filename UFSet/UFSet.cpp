@@ -15,7 +15,7 @@
 struct UFNode {
    ELEM_TYPE element;
    UFSet padre;
-   // COMPLETAR
+   int rango;
 };
 
 /* 
@@ -24,7 +24,8 @@ struct UFNode {
 UFSet createUFS(ELEM_TYPE value) {
    UFNode* newUFSet = new UFNode;
    newUFSet->element = value;
-   newUFSet->padre = NULL;
+   newUFSet->padre = newUFSet;
+   newUFSet->rango = 0;
    // COMPLETAR
 }
 
@@ -38,23 +39,44 @@ ELEM_TYPE elemUFS(UFSet ufset) {
  * Esta operación puede ser optimizada con la técnica de compresión de camino.
  */
 //Cuando no tenga un padre, significa que el nodo es el elemento distinguido
+//1ER FIND ANTES DE OPTIMIZAR POR COMPRESION
 UFSet findUFS(UFSet elem) {
    UFNode* nodeActual = elem;
-   while(nodeActual->padre != NULL){
+   while(nodeActual->padre != nodeActual){
       nodeActual = nodeActual->padre;
    }
    return nodeActual;
-   // COMPLETAR
-}
+   
+} 
+
+
 //Costo O(N), teniendose que recorrer toda una "rama" en caso de que el set dado sea una "leave"
 
 /*
  * Calcula la unión entre los conjuntos ufset1 y ufset2. 
  * Esta operación puede ser optimizada con la técnica de unión por rango.
  */
-void unionUFS(UFSet ufset1, UFSet ufset2) {
+//1ER UNION ANTES DE OPTIMIZAR POR RANGO
+/*void unionUFS(UFSet ufset1, UFSet ufset2) {
    findUFS(ufset1)->padre = findUFS(ufset2);
    // COMPLETAR
+}*/
+void unionUFS(UFSet ufset1, UFSet ufset2) {
+   if(findUFS(ufset1) == findUFS(ufset2)){
+      ;
+   }
+   else if (findUFS(ufset1)->rango > findUFS(ufset2)->rango){
+      findUFS(ufset2)->padre = findUFS(ufset1);
+   }
+   else if(findUFS(ufset1)->rango < findUFS(ufset2)->rango){
+      findUFS(ufset1)->padre = findUFS(ufset2);
+   }
+   else{
+      findUFS(ufset2)->padre = findUFS(ufset1);
+      findUFS(ufset1)->rango++;
+   }
+   //poner los ufset en variables
 }
+
 
 //Costo O(N), por realizar 2 veces findUFS de costo O(N)
