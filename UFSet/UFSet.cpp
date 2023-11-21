@@ -40,15 +40,31 @@ ELEM_TYPE elemUFS(UFSet ufset) {
  */
 //Cuando no tenga un padre, significa que el nodo es el elemento distinguido
 //1ER FIND ANTES DE OPTIMIZAR POR COMPRESION
-UFSet findUFS(UFSet elem) {
+/*UFSet findUFS(UFSet elem) {
    UFNode* nodeActual = elem;
    while(nodeActual->padre != nodeActual){
       nodeActual = nodeActual->padre;
    }
    return nodeActual;
    
-} 
+}*/
 
+UFSet findUFS(UFSet elem) {
+   UFNode* distinguido = elem;
+   UFNode* nodo = elem;
+   UFNode* temp = elem;
+   //Se encuentra la raiz
+   while(distinguido->padre != distinguido){
+      distinguido = distinguido->padre;
+   }
+   //Se comprime cambiando los padres a la raiz
+   while(nodo != distinguido){
+      temp = nodo;
+      nodo = nodo->padre;
+      temp->padre = distinguido;
+   }
+   return distinguido;
+}
 
 //Costo O(N), teniendose que recorrer toda una "rama" en caso de que el set dado sea una "leave"
 

@@ -11,7 +11,7 @@ Agregar valor rango en UFSet. En un conjunto unitario, el rango arranca de 0. Co
 para que no se modifique el rango.
 
 Una vez que se hace un find, ya se sabe cual va a ser el resultado del find (2da opt). Se evita recorrer todo el ufset hasta llegar
-al distinguido y setearlo como padre. Luego hay que comprimir el ufset seteando como padre el distinguido a todos los del ufset.
+al distinguido y setearlo como padre.
 Primero hay que recorrer una vez hasta el distinguido y setearlo en el primero pedido, luego hay que recorrer otra vez para comprimir todo.
 Al final de esta optimizacion los elementos no van a tener relacion entre si, solo con el padre (distinguido).
 
