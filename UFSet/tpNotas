@@ -19,3 +19,8 @@ La raiz no conoce a sus hijos, por eso tampoco conoce el rango(implementar). Si 
 en caso de ser necesario (tambien se puede hacer de que se recorra para abajo desde la raiz para conocer el rango.
 
 Cambiar el null por referencia a si mismo en el padre.
+
+INV REP
+-Todo UFSet tiene un padre, por lo que el padre de cada uno no puede ser NULL en ningun caso.
+-El elemento de un UFSet tampoco puede ser NULL, por lo que el UFSet nunca puede ser vacio.
+-El rango solo puede incrementar, en ningun caso puede ser negativo, y siempre es 0 cuando se crea el UFSet.
