@@ -8,7 +8,7 @@ using namespace std;
 
 int main()
 {
-    /*cout << "Inicializando equipos..." << endl;
+    cout << "Inicializando equipos..." << endl;
 
     Equipo estadosUnidos = crearEquipo(ESTADOSUNIDOS, "A");
     Equipo costaRica     = crearEquipo(COSTARICA,     "A");
@@ -73,63 +73,7 @@ int main()
     caso3.push_back(bolivia);
     caso3.push_back(chile);
     caso3.push_back(panama);
-    test("Caso 3", caso3);*/
-
-    Equipo peru          = crearEquipo(PERU,          "B");
-    Equipo brasil        = crearEquipo(BRASIL,        "B");
-    Equipo ecuador       = crearEquipo(ECUADOR,       "B");
-    Equipo haiti         = crearEquipo(HAITI,         "B");
-    UFSet p = createUFS(peru);
-    UFSet b = createUFS(brasil);
-    UFSet e = createUFS(ecuador);
-    UFSet h = createUFS(haiti);
-    cout << nombreEquipo(elemUFS(p)) << endl;
-    cout << nombreEquipo(elemUFS(b)) << endl;
-    cout << nombreEquipo(elemUFS(e)) << endl;
-    cout << nombreEquipo(elemUFS(h)) << endl;
-    cout << nombreEquipo(elemUFS(findUFS(p))) << endl;
-    cout << nombreEquipo(elemUFS(findUFS(b))) << endl;
-    cout << nombreEquipo(elemUFS(findUFS(e))) << endl;
-    cout << nombreEquipo(elemUFS(findUFS(h))) << endl;
-    cout << p->rango << endl;
-    cout << b->rango << endl;
-    cout << e->rango << endl;
-    cout << h->rango << endl;
-    unionUFS(p,b);
-    /*cout << nombreEquipo(elemUFS(findUFS(p))) << endl;
-    cout << nombreEquipo(elemUFS(findUFS(b))) << endl;
-    cout << nombreEquipo(elemUFS(findUFS(e))) << endl;
-    cout << nombreEquipo(elemUFS(findUFS(h))) << endl;
-    cout << p->rango << endl;
-    cout << b->rango << endl;
-    cout << e->rango << endl;
-    cout << h->rango << endl;*/
-    unionUFS(e, h);
-    cout << nombreEquipo(elemUFS(findUFS(p))) << endl;
-    cout << nombreEquipo(elemUFS(findUFS(b))) << endl;
-    cout << nombreEquipo(elemUFS(findUFS(e))) << endl;
-    cout << nombreEquipo(elemUFS(findUFS(h))) << endl;
-    cout << nombreEquipo(elemUFS(p->padre)) << endl;
-    cout << nombreEquipo(elemUFS(b->padre)) << endl;
-    cout << nombreEquipo(elemUFS(e->padre)) << endl;
-    cout << nombreEquipo(elemUFS(h->padre)) << endl;
-    cout << p->rango << endl;
-    cout << b->rango << endl;
-    cout << e->rango << endl;
-    cout << h->rango << endl;
-    unionUFS(p, e);
-    //cout << nombreEquipo(elemUFS(findUFS(p))) << endl;
-    //cout << nombreEquipo(elemUFS(findUFS(b))) << endl;
-    //cout << nombreEquipo(elemUFS(findUFS(e))) << endl;
-    cout << nombreEquipo(elemUFS(findUFS(h))) << endl;
-    cout << nombreEquipo(elemUFS(p->padre)) << endl;
-    cout << nombreEquipo(elemUFS(b->padre)) << endl;
-    cout << nombreEquipo(elemUFS(e->padre)) << endl;
-    cout << nombreEquipo(elemUFS(h->padre)) << endl;
-    cout << p->rango << endl;
-    cout << b->rango << endl;
-    cout << e->rango << endl;
-    cout << h->rango << endl;
-
+    test("Caso 3", caso3);
+    
     return 0;
 }

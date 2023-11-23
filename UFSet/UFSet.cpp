@@ -1,17 +1,10 @@
 #include "UFSet.h"
 
-/*
- * UFSet.cpp contiene la implementación de la interfaz para UFSet declarada en UFSet.h. 
- * Deben implementarse las operaciones de acuerdo a la representación elegida para el tipo UFSet.
- */
+/*INV. REP.:
+-Todo UFSet tiene un padre, por lo que el padre de cada uno no puede ser NULL en ningun caso.
+-El elemento de un UFSet tampoco puede ser NULL, por lo que el UFSet nunca puede ser vacio.
+-El rango solo puede incrementar, en ningun caso puede ser negativo, y siempre es 0 cuando se crea el UFSet.*/
 
-/* El tipo UFNode* representa:
- *  1. un elemento de un UFSet (o sea, un nodo del árbol que contiene a todos los elementos del conjunto)
- *  2. al conjunto en su totalidad, si el nodo es la raíz del arbol
- *
- *  El nodo tiene un puntero a su elemento asociado en el campo element. 
- *  Deberán agregarse los campos necesarios para completar la representación.
- */
 struct UFNode {
    ELEM_TYPE element;
    UFSet padre;
@@ -26,19 +19,14 @@ UFSet createUFS(ELEM_TYPE value) {
    newUFSet->element = value;
    newUFSet->padre = newUFSet;
    newUFSet->rango = 0;
-   // COMPLETAR
 }
+//Costo O(1), la creacion del UFSet en la memoria heap y el seteo de variables es de costo constante
 
 ELEM_TYPE elemUFS(UFSet ufset) {
    return ufset->element;
-   // COMPLETAR
 }
+//Costo O(1), el acceso a la variable es constante
 
-/*
- * Encuentra el elemento distinguido para el UFSet dado. 
- * Esta operación puede ser optimizada con la técnica de compresión de camino.
- */
-//Cuando no tenga un padre, significa que el nodo es el elemento distinguido
 //1ER FIND ANTES DE OPTIMIZAR POR COMPRESION
 /*UFSet findUFS(UFSet elem) {
    UFNode* nodeActual = elem;
@@ -66,33 +54,34 @@ UFSet findUFS(UFSet elem) {
    return distinguido;
 }
 
-//Costo O(N), teniendose que recorrer toda una "rama" en caso de que el set dado sea una "leave"
+//Costo O(N), teniendose que recorrer cada uno de los "padres" de los nodos hasta llegar a la raiz. Esto se hace 2 veces pero se simplifica 
+//como un costo lineal.
 
-/*
- * Calcula la unión entre los conjuntos ufset1 y ufset2. 
- * Esta operación puede ser optimizada con la técnica de unión por rango.
- */
+
+
 //1ER UNION ANTES DE OPTIMIZAR POR RANGO
 /*void unionUFS(UFSet ufset1, UFSet ufset2) {
    findUFS(ufset1)->padre = findUFS(ufset2);
-   // COMPLETAR
 }*/
 void unionUFS(UFSet ufset1, UFSet ufset2) {
-   if(findUFS(ufset1) == findUFS(ufset2)){
+   UFSet raizUF1 = findUFS(ufset1);
+   UFSet raizUF2 = findUFS(ufset2);
+   if(raizUF1 == raizUF2){
       ;
    }
-   else if (findUFS(ufset1)->rango > findUFS(ufset2)->rango){
-      findUFS(ufset2)->padre = findUFS(ufset1);
+   else if (raizUF1->rango > raizUF2->rango){
+      raizUF2->padre = raizUF1;
    }
-   else if(findUFS(ufset1)->rango < findUFS(ufset2)->rango){
-      findUFS(ufset1)->padre = findUFS(ufset2);
+   else if(raizUF1->rango < raizUF2->rango){
+      raizUF1->padre = raizUF2;
    }
    else{
-      findUFS(ufset2)->padre = findUFS(ufset1);
-      findUFS(ufset1)->rango++;
+      raizUF2->padre = raizUF1;
+      raizUF1->rango++;
    }
-   //poner los ufset en variables
 }
 
+//Costo O(N), por tener que realizar 2 veces la operiacion findUFS. El resto de las operaciones de modificacion de variables son constantes.
 
-//Costo O(N), por realizar 2 veces findUFS de costo O(N)
+
+
